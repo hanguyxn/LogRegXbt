@@ -48,7 +48,7 @@ const login = async () => {
     }
 
   } catch (error) {
-    
+    console.log(error)
   }
 }
 

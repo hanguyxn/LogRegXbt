@@ -5,6 +5,7 @@ import Input from "../components/Input.vue"
 import Text from "../components/Text.vue"
 import Button from "../components/Button.vue"
 import Link from "../components/Link.vue"
+import apiClient from '@/axios';
 
 const formData = reactive({
     fullName: "",
@@ -26,21 +27,31 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 
 
-const submitForm = () => {
-  errors.fullName = fullNameRegex.test(formData.fullName) ? "" : "Họ và tên không hợp lệ";
-  errors.email = emailRegex.test(formData.email) ? "" : "Email không hợp lệ";
-  errors.password = formData.password.length >= 6 ? "" : "Mật khẩu phải có ít nhất 6 ký tự";
-  errors.confirmPassword = formData.password === formData.confirmPassword ? "" : "Mật khẩu và mật khẩu nhập lại không trùng khớp";
+const submitForm = async () => {
+  try{
+    errors.fullName = fullNameRegex.test(formData.fullName) ? "" : "Họ và tên không hợp lệ";
+    errors.email = emailRegex.test(formData.email) ? "" : "Email không hợp lệ";
+    errors.password = formData.password.length >= 6 ? "" : "Mật khẩu phải có ít nhất 6 ký tự";
+    errors.confirmPassword = formData.password === formData.confirmPassword ? "" : "Mật khẩu và mật khẩu nhập lại không trùng khớp";
 
-  if (errors.email || errors.password || errors.fullName || errors.confirmPassword) return;
+    if (errors.email || errors.password || errors.fullName || errors.confirmPassword) return;
+  
+    if (errors.email || errors.password) return;
+    const response = await apiClient.post("/auth/register", JSON.stringify(formData))
+    if (response.status == 201){
+      router.push("/")
+    }
 
-  alert(formData)
+  } catch (error) {
+    console.log(error)
+  }
 }
 const checkboxValue = ref(false);
 
 computed(() => {
   console.log(checkboxValue.value)
 })
+
 </script>
 
 <template>
