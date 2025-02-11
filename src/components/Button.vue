@@ -8,16 +8,20 @@ defineProps({
     type: String,
     default: "Click me!"
   },
-  class:{
+  btnClass:{
     type: String,
     default: "btn"
+  },
+  isDisable: {
+    type: Boolean,
+    default: false
   }
 })
 
 </script>
 
 <template>
-  <button :class="class" :type="type"><slot class="slot"></slot>{{ text }}</button>
+  <button :class="[btnClass, { 'btn-disable': isDisable }]" :type="type" :disabled="isDisable"><slot class="slot"></slot>{{ text }}</button>
 </template>
 
 <style scoped>
@@ -54,5 +58,20 @@ defineProps({
     background-color: #fff;
     color: #1b2559;
 }
+
+.btn-disable{
+  cursor: not-allowed;
+  border-color: #d9d9d9;
+  color: rgba(0, 0, 0, 0.25);
+  background-color: rgba(0, 0, 0, 0.04);
+  box-shadow: none;
+}
+.btn-disable:hover{
+  border-color: #bbbaba;
+  color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.07);
+}
+
+
 
 </style>
