@@ -1,5 +1,6 @@
 <script setup>
 import router from "../router/index.js"
+import { defineProps } from "vue";
 defineProps({
   text: {
     type: String
