@@ -14,8 +14,12 @@ const router = createRouter({
       path: '/register',
       name: 'register',
       component: () => import("../views/Register.vue"),
+      meta: { title: "Đăng ký" }
     },
   ],
 })
-
+router.beforeEach((to, from, next) => {
+  document.title = to.meta.title || 'Trang chủ'
+  next()
+})
 export default router
