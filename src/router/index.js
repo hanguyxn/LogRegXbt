@@ -16,6 +16,23 @@ const router = createRouter({
       component: () => import("../views/Register.vue"),
       meta: { title: "Đăng ký" }
     },
+    {
+      path: '/',
+      name: 'home',
+      component: () => import("../views/Home.vue")
+    },
+    {
+      path: '/products',
+      name: 'products',
+      component: () => import("../views/Products.vue"),
+      meta: { title: 'Sản phẩm' }
+    },
+    {
+      path: "/staffs",
+      name: "staffs",
+      component: () => import("../views/Staff.vue"),
+      meta: {title: 'Nhân viên'}
+    }
   ],
 })
 router.beforeEach((to, from, next) => {

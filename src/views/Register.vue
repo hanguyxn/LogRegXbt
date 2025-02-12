@@ -1,6 +1,6 @@
 <script setup>
 import { reactive, computed, ref } from 'vue';
-import LoginLayout from '../components/LoginLayout.vue'
+import LoginLayout from '@/layouts/LoginLayout.vue'
 import Input from "../components/Input.vue"
 import Text from "../components/Text.vue"
 import Button from "../components/Button.vue"
