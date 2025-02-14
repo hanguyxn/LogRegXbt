@@ -14,18 +14,23 @@ const props = defineProps({
 })
 
 
-const emit = defineEmits(["inputValue"]); // Khai báo emit sự kiện
+const emit = defineEmits(["inputValue"]);
 
-const inputValue = ref(""); // 🚀 Định nghĩa biến inputValue
+const inputValue = ref("");
 
 const updateInputValue = (e) => {
     inputValue.value = e.target.value;
-    emit("inputValue", inputValue.value); // Truyền giá trị lên component cha
+    emit("inputValue", inputValue.value);
 };
 </script>
 
 <template>
-    <input @blur="updateInputValue" v-model="inputValue" :class="class" :type="type" :placeholder="placeholder" :required="required">
+    <template v-if="props.type === 'checkbox'">
+        <input @blur="updateInputValue" v-model="inputValue" :class="class" :type="type" :required="required">
+    </template>
+    <template v-else>
+        <input @blur="updateInputValue" v-model="inputValue" :class="class" :type="type" :placeholder="placeholder" :required="required">
+    </template>
 </template>
 
 

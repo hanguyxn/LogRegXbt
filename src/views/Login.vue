@@ -9,6 +9,7 @@ import Link from "../components/Link.vue"
 import Modal from "../components/Modal.vue"
 import apiClient from '@/axios';
 import router from "../router/index.js"
+import showMessage from '@/assets/js/message';
 
 const formData = reactive({
     email: "",
@@ -44,14 +45,19 @@ const login = async () => {
     if (errors.email || errors.password) return;
     const response = await apiClient.post("/auth/login", JSON.stringify(formData))
     if (response.status == 201){
+      // console.log()
+      showMessage('success', response?.data?.message)
       router.push("/")
+    }else{
+      showMessage('warning', response?.data?.message)
     }
 
   } catch (error) {
+    showMessage('error', "Xảy ra lỗi khi đăng nhập")
     console.log(error)
   }
 }
-
+// showMessage('error', "Đăng nhập thất bại")
 </script>
 
 <template>
@@ -81,7 +87,10 @@ const login = async () => {
           <Button type="submit" btnClass="btn btn-primary" text="Đăng nhập"/>
           <div class="after-btn flex">
               <Text text="Bạn chưa có tài khoản ?"/>
-              <Link class="register" text="Đăng ký" href="/register"></Link>
+              <router-link :to="{name: 'register'}">
+                <Link class="register" text="Đăng ký"></Link>
+              </router-link>
+              
           </div>
         </form>
 

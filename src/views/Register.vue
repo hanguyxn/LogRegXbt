@@ -1,14 +1,16 @@
 <script setup>
-import { reactive, computed, ref } from 'vue';
+import { reactive, computed, ref, watch } from 'vue';
 import LoginLayout from '@/layouts/LoginLayout.vue'
 import Input from "../components/Input.vue"
 import Text from "../components/Text.vue"
 import Button from "../components/Button.vue"
 import Link from "../components/Link.vue"
 import apiClient from '@/axios';
+import router from '@/router';
+import showMessage from '@/assets/js/message';
 
 const formData = reactive({
-    fullName: "",
+    fullname: "",
     email: "",
     password: "",
     confirmPassword: ""
@@ -16,7 +18,7 @@ const formData = reactive({
 
 
 const errors = reactive({
-  fullName: "",
+  fullname: "",
   email: "",
   password: "",
   confirmPassword: ""
@@ -29,17 +31,20 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const submitForm = async () => {
   try{
-    errors.fullName = fullNameRegex.test(formData.fullName) ? "" : "Họ và tên không hợp lệ";
+    errors.fullname = fullNameRegex.test(formData.fullname) ? "" : "Họ và tên không hợp lệ";
     errors.email = emailRegex.test(formData.email) ? "" : "Email không hợp lệ";
     errors.password = formData.password.length >= 6 ? "" : "Mật khẩu phải có ít nhất 6 ký tự";
     errors.confirmPassword = formData.password === formData.confirmPassword ? "" : "Mật khẩu và mật khẩu nhập lại không trùng khớp";
 
-    if (errors.email || errors.password || errors.fullName || errors.confirmPassword) return;
+    if (errors.email || errors.password || errors.fullname || errors.confirmPassword) return;
   
     if (errors.email || errors.password) return;
     const response = await apiClient.post("/auth/register", JSON.stringify(formData))
     if (response.status == 201){
-      router.push("/")
+      showMessage('success', response?.data?.message)
+      router.push("/login")
+    }else{
+      alert(response?.data?.message)
     }
 
   } catch (error) {
@@ -48,8 +53,8 @@ const submitForm = async () => {
 }
 const checkboxValue = ref(false);
 
-computed(() => {
-  console.log(checkboxValue.value)
+watch(checkboxValue, (newValue) => {
+  console.log(newValue)
 })
 
 </script>
@@ -64,8 +69,8 @@ computed(() => {
             <div class="flex">
                 <Text text="Họ tên"/><span class="required-star">*</span>
             </div>
-            <Input v-model="formData.fullName" type="text" placeholder="Tên hiển thị trong hệ thống" :required="true"/>
-            <p class="error-message" v-if="errors.fullName">{{ errors.fullName }}</p>
+            <Input v-model="formData.fullname" type="text" placeholder="Tên hiển thị trong hệ thống" :required="true"/>
+            <p class="error-message" v-if="errors.fullname">{{ errors.fullname }}</p>
         </div>
         <div class="form-group">
             <div class="flex">
@@ -96,7 +101,9 @@ computed(() => {
         <Button :isDisable="!checkboxValue" type="submit" btnClass="btn btn-primary" text="Đăng ký"/>
         <div class="after-btn flex">
             <Text text="Bạn đã có tài khoản ?"/>
-            <Link class="register" text="Đăng nhập" href="/login"></Link>
+            <router-link :to="{name: 'login'}">
+              <Link class="register" text="Đăng nhập"></Link>
+            </router-link>
         </div>
         </form>
     </div>
