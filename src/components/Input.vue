@@ -25,7 +25,7 @@ const updateInputValue = (e) => {
 </script>
 
 <template>
-    <template v-if="props.type === 'checkbox'">
+    <template v-if="props.type === 'checkbox' || props.type === 'radio' ">
         <input @blur="updateInputValue" v-model="inputValue" :class="class" :type="type" :required="required">
     </template>
     <template v-else>

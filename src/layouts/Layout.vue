@@ -1,6 +1,7 @@
 <script setup>
 
 import { Layout } from 'ant-design-vue';
+import { Button } from 'ant-design-vue';
 import AntMenu from '@/components/Ant/AntMenu.vue';
 const { Header, Sider, Content, Footer } = Layout;
 </script>
@@ -16,10 +17,10 @@ const { Header, Sider, Content, Footer } = Layout;
         <span>Quản lý hệ thống</span>
         <div>
           <router-link :to="{name: 'login'}">
-            <a-button>Đăng nhập</a-button>
+            <Button>Đăng nhập</Button>
           </router-link>
           <router-link :to="{name: 'login'}">
-            <a-button type="primary" style="margin-left: 8px">Đăng ký</a-button>
+            <Button type="primary" style="margin-left: 8px">Đăng ký</Button>
           </router-link>
         </div>
       </Header>
