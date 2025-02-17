@@ -1,21 +1,24 @@
 <script setup>
-import { h, ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
-import { Menu } from 'ant-design-vue';
+import { h, reactive, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import { Menu } from 'ant-design-vue'
 import {
   HomeOutlined,
   AppstoreOutlined,
   UserOutlined,
   SettingOutlined,
-} from '@ant-design/icons-vue';
+} from '@ant-design/icons-vue'
 
-const route = useRoute();
-const selectedKeys = ref([route.name]); // Lưu trạng thái key đang chọn
+const route = useRoute()
+const selectedKeys = ref([route.name]) // Lưu trạng thái key đang chọn
 
 // Cập nhật selectedKeys khi route thay đổi
-watch(() => route.name, (newName) => {
-  selectedKeys.value = [newName];
-});
+watch(
+  () => route.name,
+  (newName) => {
+    selectedKeys.value = [newName]
+  },
+)
 </script>
 
 <template>
@@ -27,7 +30,7 @@ watch(() => route.name, (newName) => {
       <router-link :to="{ name: 'products' }">Sản phẩm</router-link>
     </Menu.Item>
     <Menu.Item key="staffs" :icon="h(UserOutlined)">
-      <router-link :to="{name: 'staffs'}">Nhân viên</router-link>
+      <router-link :to="{ name: 'staffs' }">Nhân viên</router-link>
     </Menu.Item>
     <!-- <Menu.SubMenu key="sub1" :title="'Cài đặt'" :icon="h(SettingOutlined)">
       <Menu.Item key="account">

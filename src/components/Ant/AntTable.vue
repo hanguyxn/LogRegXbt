@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref, watch } from 'vue';
+import { reactive, watch, defineProps } from 'vue';
 import { Checkbox } from 'ant-design-vue';
 
 const props = defineProps({
@@ -35,7 +35,7 @@ const handleTableChange = (pag) => {
     @change="handleTableChange"
     bordered
   >
-    <template #bodyCell="{ text, record, column }">
+    <template #bodyCell="{ text, column }">
       <template v-if="column.dataIndex === 'checkbox'">
         <Checkbox />
       </template>

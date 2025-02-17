@@ -4,7 +4,7 @@ import 'animate.css';
 import Text from './Text.vue';
 import Input from './Input.vue';
 import Button from './Button.vue';
-import { ref, watch, defineEmits, reactive } from 'vue';
+import { ref, watch, defineEmits, reactive, defineProps } from 'vue';
 
 const props = defineProps({
     modalTitle: String,
