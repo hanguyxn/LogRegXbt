@@ -36,7 +36,7 @@ const { isAuthenticated, logout } = useAuth()
           <router-link :to="{ name: 'login' }">
             <Button>Đăng nhập</Button>
           </router-link>
-          <router-link :to="{ name: 'login' }">
+          <router-link :to="{ name: 'register' }">
             <Button type="primary" style="margin-left: 8px">Đăng ký</Button>
           </router-link>
         </div>
@@ -50,9 +50,6 @@ const { isAuthenticated, logout } = useAuth()
           <slot name="content"></slot>
         </div>
       </Content>
-      <!-- <Footer style="text-align: center">
-        Ant Design Vue ©2024 Created by .
-      </Footer> -->
     </Layout>
   </Layout>
 </template>
