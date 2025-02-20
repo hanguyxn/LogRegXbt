@@ -25,3 +25,7 @@ a{
 .flex{
   display: flex !important;
 }
+
+.reset-margin {
+  margin: 0 !important;
+}

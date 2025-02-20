@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref,computed } from 'vue';
+import { reactive, ref, computed } from 'vue';
 
 import LoginLayout from '../layouts/LoginLayout.vue'
 import Input from "../components/Input.vue"
@@ -12,24 +12,24 @@ import router from "../router/index.js"
 import showMessage from '@/assets/js/message';
 
 const formData = reactive({
-    email: "",
-    password: ""
+  email: "trinhho@gmail.com",
+  password: "trinh1"
 });
 
 const errors = reactive({
-    email: "",
-    password: ""
+  email: "",
+  password: ""
 });
 
 const showModal = ref(false)
 
 const validateEmail = computed(() => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(formData.email) ? "" : "Email không hợp lệ";
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(formData.email) ? "" : "Email không hợp lệ";
 });
 
 const validatePassword = computed(() => {
-    return formData.password.length >= 6 ? "" : "Mật khẩu phải có ít nhất 6 ký tự";
+  return formData.password.length >= 6 ? "" : "Mật khẩu phải có ít nhất 6 ký tự";
 });
 
 
@@ -44,11 +44,10 @@ const login = async () => {
 
     if (errors.email || errors.password) return;
     const response = await apiClient.post("/auth/login", JSON.stringify(formData))
-    if (response.status == 201){
-      // console.log()
+    if (response.status == 201) {
       showMessage('success', response?.data?.message)
       router.push("/")
-    }else{
+    } else {
       showMessage('warning', response?.data?.message)
     }
 
@@ -57,112 +56,117 @@ const login = async () => {
     console.log(error)
   }
 }
-// showMessage('error', "Đăng nhập thất bại")
+
 </script>
 
 <template>
-    <LoginLayout>
+  <LoginLayout>
     <div class="login">
-        <Modal v-model:isShow="showModal"/>
-        <img src="../assets/logo.svg" alt="">
-        <Text class="larger-text" text="Chào mừng quay lại!" textType="larger"/>
-        <Text class="small-text" text="Hãy đăng nhập và khám phá bản thân ngay từ hôm nay" textType="small"/>
-        <form @submit.prevent="login">
-          <div class="form-group">
-              <Text text="Email"/>
-              <Input v-model="formData.email" type="text" placeholder="Email" :required="true"/>
-              <p class="error-message" v-if="errors.email">{{ errors.email }}</p>
-          </div>
-          <div class="form-group">
-              <Text text="Mật khẩu"/>
-              <Input v-model="formData.password" type="text" placeholder="Mật khẩu" :required="true"/>
-              <p class="error-message" v-if="errors.password">{{ errors.password }}</p>
-          </div>
-          <div class="before-btn flex">
-              <div class="flex">
-              <Input class="checkbox" type="checkbox" placeholder="Email"/><Text class="save-text" text="Lưu tài khoản"/>
-              </div>
-              <Link @click="forgotPassword" text="Quên mật khẩu"/>
-          </div>
-          <Button type="submit" btnClass="btn btn-primary" text="Đăng nhập"/>
-          <div class="after-btn flex">
-              <Text text="Bạn chưa có tài khoản ?"/>
-              <router-link :to="{name: 'register'}">
-                <Link class="register" text="Đăng ký"></Link>
-              </router-link>
-              
-          </div>
-        </form>
-
-        <div class="line-text">
-        <Text text="Đăng nhập với"/>
+      <Modal v-model:isShow="showModal" />
+      <img src="../assets/logo.svg" alt="">
+      <Text class="larger-text" text="Chào mừng quay lại!" textType="larger" />
+      <Text class="small-text" text="Hãy đăng nhập và khám phá bản thân ngay từ hôm nay" textType="small" />
+      <form @submit.prevent="login">
+        <div class="form-group">
+          <Text text="Email" />
+          <Input v-model="formData.email" type="email" placeholder="Email" :required="false" />
+          <p class="error-message" v-if="errors.email">{{ errors.email }}</p>
         </div>
-        <a href="#"><Button btnClass="btn btn-outline" text="Google"><img src="https://khungnangluc.com/assets/google-e667d2f2.svg" alt=""></Button></a>
+        <div class="form-group">
+          <Text text="Mật khẩu" />
+          <Input v-model="formData.password" type="password" placeholder="Mật khẩu" :required="false" />
+          <p class="error-message" v-if="errors.password">{{ errors.password }}</p>
+        </div>
+        <div class="before-btn flex">
+          <div class="flex">
+            <Input class="checkbox" type="checkbox" placeholder="Email" /><Text class="save-text"
+              text="Lưu tài khoản" />
+          </div>
+          <Link @click="forgotPassword" text="Quên mật khẩu" />
+        </div>
+        <Button type="submit" btnClass="btn btn-primary" text="Đăng nhập" />
+        <div class="after-btn flex">
+          <Text text="Bạn chưa có tài khoản ?" />
+          <router-link :to="{ name: 'register' }">
+            <Link class="register" text="Đăng ký">
+            </Link>
+          </router-link>
+
+        </div>
+      </form>
+
+      <div class="line-text">
+        <Text text="Đăng nhập với" />
+      </div>
+      <a href="#"><Button btnClass="btn btn-outline" text="Google"><img
+            src="https://khungnangluc.com/assets/google-e667d2f2.svg" alt=""></Button></a>
     </div>
-    </LoginLayout>
+  </LoginLayout>
 
 </template>
 
 <style scoped>
-.login{
+.login {
   min-width: 60%;
 }
 
-.login > img{
+.login>img {
   margin-bottom: 16px;
 }
-.larger-text{
+
+.larger-text {
   margin-bottom: 8px;
 }
-.small-text{
+
+.small-text {
   margin-bottom: 32px;
 }
 
 .form-group,
-.after-btn{
+.after-btn {
   margin-top: 24px;
 }
 
-.form-group > Input{
+.form-group>Input {
   margin-top: 8px;
 }
 
-.after-btn .register{
+.after-btn .register {
   margin-left: 8px;
 }
 
-Button{
+Button {
   margin-top: 16px;
 }
 
-.flex{
+.flex {
   display: flex;
 }
 
-.before-btn{
-  margin-top:  1.5rem;
+.before-btn {
+  margin-top: 1.5rem;
   justify-content: space-between;
 }
 
-.before-btn .save-text{
+.before-btn .save-text {
   margin-left: .5rem;
 }
 
 .line-text {
-    display: flex;
-    align-items: center;
-    text-align: center;
-    font-weight: bold;
-    margin: 48px;
-}
-.line-text::before,
-.line-text::after {
-    content: "";
-    flex-grow: 1;
-    height: 1.5px;
-    background-color: #ccc;
-    margin: 0 15px;
-    opacity: 0.3;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  font-weight: bold;
+  margin: 48px;
 }
 
+.line-text::before,
+.line-text::after {
+  content: "";
+  flex-grow: 1;
+  height: 1.5px;
+  background-color: #ccc;
+  margin: 0 15px;
+  opacity: 0.3;
+}
 </style>

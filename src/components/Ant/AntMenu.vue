@@ -1,5 +1,5 @@
 <script setup>
-import { h, reactive, ref, watch } from 'vue'
+import { h, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { Menu } from 'ant-design-vue'
 import {
@@ -7,38 +7,52 @@ import {
   AppstoreOutlined,
   UserOutlined,
   SettingOutlined,
+  RiseOutlined
 } from '@ant-design/icons-vue'
 
 const route = useRoute()
-const selectedKeys = ref([route.name]) // Lưu trạng thái key đang chọn
+const selectedKeys = ref([route.name])
+const openKeys = ref([])
 
-// Cập nhật selectedKeys khi route thay đổi
+
+const menuMap = {
+  staffs: 'sub1',
+  role: 'sub1',
+}
+
 watch(
   () => route.name,
   (newName) => {
     selectedKeys.value = [newName]
+
+
+    if (menuMap[newName]) {
+      openKeys.value = [menuMap[newName]]
+    }
   },
+  { immediate: true }
 )
 </script>
 
 <template>
-  <Menu mode="inline" :selectedKeys="selectedKeys">
+  <Menu mode="inline" v-model:selectedKeys="selectedKeys" v-model:openKeys="openKeys">
     <Menu.Item key="home" :icon="h(HomeOutlined)">
       <router-link :to="{ name: 'home' }">Trang chủ</router-link>
     </Menu.Item>
     <Menu.Item key="products" :icon="h(AppstoreOutlined)">
       <router-link :to="{ name: 'products' }">Sản phẩm</router-link>
     </Menu.Item>
-    <Menu.Item key="staffs" :icon="h(UserOutlined)">
-      <router-link :to="{ name: 'staffs' }">Nhân viên</router-link>
+
+    <Menu.SubMenu key="sub1" title="Quản lý" :icon="h(SettingOutlined)">
+      <Menu.Item key="employee" :icon="h(UserOutlined)">
+        <router-link :to="{ name: 'employee' }">Nhân viên</router-link>
+      </Menu.Item>
+      <Menu.Item key="role" :icon="h(RiseOutlined)">
+        <router-link :to="{ name: 'role' }">Vai trò</router-link>
+      </Menu.Item>
+    </Menu.SubMenu>
+    <Menu.Item key="profile" :icon="h(RiseOutlined)">
+      <router-link :to="{ name: 'profile' }">Profile</router-link>
     </Menu.Item>
-    <!-- <Menu.SubMenu key="sub1" :title="'Cài đặt'" :icon="h(SettingOutlined)">
-      <Menu.Item key="account">
-        <router-link :to="{ name: 'account' }">Tài khoản</router-link>
-      </Menu.Item>
-      <Menu.Item key="system">
-        <router-link :to="{ name: 'system' }">Hệ thống</router-link>
-      </Menu.Item>
-    </Menu.SubMenu> -->
   </Menu>
 </template>

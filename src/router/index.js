@@ -27,10 +27,22 @@ const router = createRouter({
       meta: { title: 'Sản phẩm' }
     },
     {
-      path: "/staffs",
-      name: "staffs",
-      component: () => import("../views/Staff.vue"),
+      path: "/employee",
+      name: "employee",
+      component: () => import("../views/Employee.vue"),
       meta: {title: 'Nhân viên'}
+    },
+    {
+      path: "/role",
+      name: "role",
+      component: () => import("../views/Role.vue"),
+      meta: {title: "Vai trò"}
+    },
+    {
+      path: '/profile',
+      name: "profile",
+      component: () => import("../views/member/Profile.vue"),
+      meta: {title: "Trang cá nhân"}
     }
   ],
 })
@@ -38,4 +50,5 @@ router.beforeEach((to, from, next) => {
   document.title = to.meta.title || 'Trang chủ'
   next()
 })
+
 export default router
