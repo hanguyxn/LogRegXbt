@@ -4,7 +4,7 @@ defineProps({
   text: {
     type: String
   },
-  textType:{
+  textType: {
     type: String,
     default: "custom-text"
   }
@@ -24,14 +24,13 @@ defineProps({
   font-weight: 500;
 }
 
-.larger{
-    font-weight: 700;
-    font-size: 22px;
-    line-height: 27px;
+.larger {
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 27px;
 }
 
-.small{
-    color: #161414aa;
+.small {
+  color: #161414aa;
 }
-
 </style>

@@ -20,7 +20,7 @@ const staffInfor = reactive({
 
 const page = reactive({
   current: 1,
-  size: 10,
+  size: 5,
   totalValue: 0
 })
 
@@ -63,7 +63,6 @@ const handlePageChange = (newPage, newSize) => {
 const isShowModal = ref(false)
 
 const showModal = () => {
-  console.log("click show modal")
   isShowModal.value = true
 }
 
@@ -184,6 +183,7 @@ onMounted(() => {
         }" bordered>
           <template #bodyCell="{ text, column, record }">
             {{ text }}
+
           </template>
         </a-table>
         <a-modal style="width: 50%" v-model:open="isShowModal" title="Thêm nhân viên" @ok="handleOk"

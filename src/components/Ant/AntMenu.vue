@@ -16,7 +16,7 @@ const openKeys = ref([])
 
 
 const menuMap = {
-  staffs: 'sub1',
+  employee: 'sub1',
   role: 'sub1',
 }
 

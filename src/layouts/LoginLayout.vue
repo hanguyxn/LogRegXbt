@@ -13,14 +13,14 @@
 </template>
 
 <style scoped>
-
 .left-layout {
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
 }
-.right-layout{
+
+.right-layout {
     width: 100%;
     height: 100vh;
     background-color: aquamarine;
@@ -33,14 +33,13 @@
 
 @media (min-width: 780px) {
 
-    .container{
+    .container {
         display: grid;
         grid-template-columns: 1fr 1fr;
     }
 
-    .right-layout{
+    .right-layout {
         display: block;
     }
 }
-
 </style>

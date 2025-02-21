@@ -34,11 +34,15 @@ export function useAuth() {
 
   const logout = async () => {
     try {
-      await apiClient.post('/auth/logout')
-      isAuthenticated.value = false
-      router.push('/login')
+      const response = await apiClient.get('/auth/logout')
+      if (response.status == 200){
+        isAuthenticated.value = false
+        router.push('/login')
+        showMessage("success", response.data.message)
+      }
+      
     } catch (error) {
-      console.error('Logout failed:', error)
+      showMessage("error", error)
     }
   }
 

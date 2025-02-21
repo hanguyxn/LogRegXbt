@@ -24,14 +24,6 @@ const { isAuthenticated, logout } = useAuth()
       <Header
         style="background: #fff; padding: 0 16px; font-weight: bold; display: flex; justify-content: space-between; align-items: center">
         <span>Quản lý hệ thống</span>
-        <!-- <div>
-          <router-link :to="{ name: 'login' }">
-            <Button>Đăng nhập</Button>
-          </router-link>
-          <router-link :to="{ name: 'login' }">
-            <Button type="primary" style="margin-left: 8px">Đăng ký</Button>
-          </router-link>
-        </div> -->
         <div v-if="!isAuthenticated">
           <router-link :to="{ name: 'login' }">
             <Button>Đăng nhập</Button>
