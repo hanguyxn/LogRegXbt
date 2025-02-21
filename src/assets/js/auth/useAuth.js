@@ -18,17 +18,9 @@ export function useAuth() {
       }
       
     } catch (error) {
-      console.error('Session check failed:', error)
+      showMessage('warning', error)
       isAuthenticated.value = false
-    }
-  }
-
-  const login = async (credentials) => {
-    try {
-      // await apiClient.post('/auth/login', credentials)
-      await checkSession()
-    } catch (error) {
-      console.error('Login failed:', error)
+      router.push('/login')
     }
   }
 
@@ -53,7 +45,6 @@ export function useAuth() {
   return {
     isAuthenticated,
     checkSession,
-    login,
     logout,
   }
 }

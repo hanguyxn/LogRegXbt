@@ -1,12 +1,14 @@
 <script setup>
 import { ref, h, reactive, onMounted, watchEffect } from 'vue'
 import { Input, Button, Select, Tag, Flex, Row, Col, Pagination } from 'ant-design-vue'
-import { PlusOutlined } from '@ant-design/icons-vue'
+import { PlusOutlined, SearchOutlined } from '@ant-design/icons-vue'
 import Layout from '@/layouts/Layout.vue'
 import apiClient from '@/axios'
 import showMessage from '@/assets/js/message'
 import Text from '@/components/Text.vue'
+import Loading from '@/components/Loading.vue'
 
+const isLoading = ref(false)
 
 const staffInfor = reactive({
   fullname: '',
@@ -104,7 +106,6 @@ const columns = reactive([
     title: 'Trạng thái',
     dataIndex: 'status',
     key: 'status',
-    customRender: ({ text }) => h(Tag, { color: text === 'working' ? 'green' : 'volcano' }, () => text)
   },
   {
     title: 'Vai trò',
@@ -139,6 +140,7 @@ onMounted(() => {
 <template>
   <Layout>
     <template #nav>
+
       <Flex justify="end">
         <Button class="margin-left">Phân quyền vai trò</Button>
         <Button @click="showModal" class="margin-left" type="primary" :icon="h(PlusOutlined)">Thêm nhân viên
@@ -146,12 +148,13 @@ onMounted(() => {
       </Flex>
     </template>
     <template #content>
+      <Loading :loading="isLoading" />
       <div class="employee-management">
 
         <div class="top-bar">
           <Row>
-            <Col flex="1 1 auto"><Input @keyup.enter="getEmployee" v-model:value="searchQuery"
-              placeholder="Tìm kiếm theo email, số điện thoại, tên nhân viên"
+            <Col flex="1 1 auto"><Input :prefix="h(SearchOutlined)" @keyup.enter="getEmployee"
+              v-model:value="searchQuery" placeholder="Tìm kiếm theo email, số điện thoại, tên nhân viên"
               style="width: 600px; margin-right: 12px" />
             </Col>
             <Col flex="0 1 auto">
@@ -182,8 +185,15 @@ onMounted(() => {
           onChange: handlePageChange
         }" bordered>
           <template #bodyCell="{ text, column, record }">
-            {{ text }}
 
+            <template v-if="column.key === 'status'">
+              <a-tag :color="record.status === 'working' ? 'green' : 'red'">
+                {{ record.status === 'working' ? 'Đang làm việc' : 'Nghỉ việc' }}
+              </a-tag>
+            </template>
+            <template v-else>
+              {{ text }}
+            </template>
           </template>
         </a-table>
         <a-modal style="width: 50%" v-model:open="isShowModal" title="Thêm nhân viên" @ok="handleOk"
@@ -221,8 +231,7 @@ onMounted(() => {
             </div>
             <div>
               <Text class="reset-margin" text="Vai trò"></Text>
-              <Select placeholder="Chọn vai trò" :value="secondCity"
-                :options="roles.map(role => ({ label: role?.name, value: role?.id }))"
+              <Select placeholder="Chọn vai trò" :options="roles.map(role => ({ label: role?.name, value: role?.id }))"
                 v-model:value="staffInfor.id_role" style="width: 100%" />
             </div>
           </form>

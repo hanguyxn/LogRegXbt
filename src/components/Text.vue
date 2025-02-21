@@ -15,6 +15,7 @@ defineProps({
 <template>
   <p :class="textType">
     {{ text }}
+
   </p>
 </template>
 
@@ -32,5 +33,9 @@ defineProps({
 
 .small {
   color: #161414aa;
+}
+
+p {
+  margin-bottom: 0px;
 }
 </style>

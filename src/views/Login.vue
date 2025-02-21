@@ -69,12 +69,12 @@ const login = async () => {
       <form @submit.prevent="login">
         <div class="form-group">
           <Text text="Email" />
-          <Input v-model="formData.email" type="email" placeholder="Email" :required="false" />
+          <Input v-model="formData.email" type="email" placeholder="Email" :required="true" />
           <p class="error-message" v-if="errors.email">{{ errors.email }}</p>
         </div>
         <div class="form-group">
           <Text text="Mật khẩu" />
-          <Input v-model="formData.password" type="password" placeholder="Mật khẩu" :required="false" />
+          <Input v-model="formData.password" type="password" placeholder="Mật khẩu" :required="true" />
           <p class="error-message" v-if="errors.password">{{ errors.password }}</p>
         </div>
         <div class="before-btn flex">

@@ -4,7 +4,7 @@ const props = defineProps({
     type: String,
     placeholder: String,
     class: {
-        type:String,
+        type: String,
         default: "input"
     },
     required: {
@@ -25,21 +25,23 @@ const updateInputValue = (e) => {
 </script>
 
 <template>
-    <template v-if="props.type === 'checkbox' || props.type === 'radio' ">
+    <template v-if="props.type === 'checkbox' || props.type === 'radio'">
         <input @blur="updateInputValue" v-model="inputValue" :class="class" :type="type" :required="required">
     </template>
     <template v-else>
-        <input @blur="updateInputValue" v-model="inputValue" :class="class" :type="type" :placeholder="placeholder" :required="required">
+        <input @blur="updateInputValue" v-model="inputValue" :class="class" :type="type" :placeholder="placeholder"
+            :required="required">
     </template>
 </template>
 
 
 <style scoped>
-input{
+input {
     outline: none;
     border-radius: 8px;
 }
-.input{
+
+.input {
     font-size: 14px;
     padding: 8px 16px;
     background-color: rgb(247, 247, 253);
@@ -48,21 +50,20 @@ input{
     width: 100%;
 }
 
-.input:focus{
+.input:focus {
     border: 1px solid #51a8a1 !important;
     box-shadow: 0 0 0 2px #cbe6e4;
 }
 
-.checkbox{
+.checkbox {
     color: #06f !important;
     width: 16px;
     height: 16px;
     border-color: #f4f4f4;
 }
 
-.checkbox:hover{
+.checkbox:hover {
     cursor: pointer;
     border-color: #06f;
 }
-
 </style>

@@ -7,20 +7,23 @@ import apiClient from '@/axios'
 import { ref } from 'vue';
 import { Modal, Button } from 'ant-design-vue';
 import showMessage from '@/assets/js/message'
+import Text from '@/components/Text.vue'
 
-const isModalOpen = ref(false);
+const isModalOpen = ref(false)
+const isDeleteModalOpen = ref(false)
 const roleName = ref("")
+const selectedRole = ref("")
+
+
 const showModal = () => {
     isModalOpen.value = true;
 };
 
 const handleOk = () => {
     isModalOpen.value = false;
-};
+}
 
-const handleCancel = () => {
-    isModalOpen.value = false;
-};
+
 const tableData = reactive([])
 
 const getAllRole = async () => {
@@ -56,12 +59,23 @@ const columns = [
 ]
 
 const editRole = (roleId) => {
+    selectedRole.value = roleId
     console.log(roleId);
 
 }
 
-const deleteRole = (roleId) => {
-    console.log(roleId);
+const confirmDelete = (role) => {
+    isDeleteModalOpen.value = true
+    selectedRole.value = role
+}
+
+const deleleRole = (role) => {
+    try {
+        const response = apiClient.delete('roles/' + role.id)
+
+    } catch (error) {
+
+    }
 }
 
 const addRole = async () => {
@@ -86,11 +100,11 @@ const addRole = async () => {
 <template>
     <Layout>
         <template #nav>
-            <Modal title="Thêm vai trò" :open="isModalOpen" @ok="addRole" @cancel="handleCancel">
+            <Modal title="Thêm vai trò" :open="isModalOpen" @ok="addRole" @cancel="isModalOpen = false">
                 <form @submit.prevent="addRole">
-                    <a-input v-model:value="roleName" placeholder="Nhập tên vai trò"></a-input>
+                    <a-input v-model:value="roleName" placeholder="Nhập tên vai
+                    trò"></a-input>
                 </form>
-
             </Modal>
             <Flex justify="end">
                 <a-button @click="showModal" type="primary" style="width: auto; margin: 12px 12px 0 12px"
@@ -102,16 +116,20 @@ const addRole = async () => {
             <a-table :dataSource="tableData" :columns="columns" rowKey="id" bordered>
                 <template #bodyCell="{ column, record }">
                     <template v-if="column.key == 'fn'">
+
                         <a-button :icon="h(EditOutlined)" color="danger" @click="editRole(record.id)">
                             Sửa
                         </a-button>
                         <a-button class="margin" :icon="h(DeleteOutlined)" style="color: red;"
-                            @click="deleteRole(record.id)">
+                            @click="confirmDelete(record)">
                             Xóa
                         </a-button>
                     </template>
                 </template>
             </a-table>
+            <a-modal @ok="deleleRole" title="Thông báo" :open="isDeleteModalOpen" @cancel="isDeleteModalOpen = false">
+                <Text v-html="`Bạn có chắc chắn xóa vai trò <strong>${selectedRole.name}</strong>`" />
+            </a-modal>
         </template>
     </Layout>
 </template>

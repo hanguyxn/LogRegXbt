@@ -38,7 +38,7 @@ const { isAuthenticated, logout } = useAuth()
       </Header>
       <slot style="margin: 24px" name="nav"></slot>
       <Content style="margin: 16px">
-        <div style="padding: 24px; background: #fff; min-height: 360px">
+        <div style="padding: 24px; background: #fff; min-height: 460px">
           <slot name="content"></slot>
         </div>
       </Content>
