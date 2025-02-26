@@ -18,6 +18,7 @@ a{
 
 .error-message{
   margin-top: 4px;
+  margin-bottom: 0px !important;
   color: red;
   font-size: 14px;
 }
@@ -28,4 +29,8 @@ a{
 
 .reset-margin {
   margin: 0 !important;
+}
+
+.top-bar {
+  margin-bottom: 15px
 }

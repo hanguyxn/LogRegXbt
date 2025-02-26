@@ -7,7 +7,8 @@ import {
   AppstoreOutlined,
   UserOutlined,
   SettingOutlined,
-  RiseOutlined
+  RiseOutlined,
+  ShoppingCartOutlined
 } from '@ant-design/icons-vue'
 
 const route = useRoute()
@@ -42,7 +43,9 @@ watch(
     <Menu.Item key="products" :icon="h(AppstoreOutlined)">
       <router-link :to="{ name: 'products' }">Sản phẩm</router-link>
     </Menu.Item>
-
+    <Menu.Item key="cart" :icon="h(ShoppingCartOutlined)">
+      <router-link :to="{ name: 'cart' }">Đơn hàng</router-link>
+    </Menu.Item>
     <Menu.SubMenu key="sub1" title="Quản lý" :icon="h(SettingOutlined)">
       <Menu.Item key="employee" :icon="h(UserOutlined)">
         <router-link :to="{ name: 'employee' }">Nhân viên</router-link>

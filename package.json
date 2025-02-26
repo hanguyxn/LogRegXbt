@@ -13,6 +13,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@vueup/vue-quill": "^1.2.0",
     "animate.css": "^4.1.1",
     "ant-design-vue": "^4.2.6",
     "axios": "^1.7.9",

@@ -102,11 +102,10 @@ const addRole = async () => {
         <template #nav>
             <Modal title="Thêm vai trò" :open="isModalOpen" @ok="addRole" @cancel="isModalOpen = false">
                 <form @submit.prevent="addRole">
-                    <a-input v-model:value="roleName" placeholder="Nhập tên vai
-                    trò"></a-input>
+                    <a-input v-model:value="roleName" placeholder="Nhập tên vai trò"></a-input>
                 </form>
             </Modal>
-            <Flex justify="end">
+            <Flex justify="end" style="width: auto; margin: 12px 12px 0 12px">
                 <a-button @click="showModal" type="primary" style="width: auto; margin: 12px 12px 0 12px"
                     :icon="h(PlusOutlined)">Thêm vai
                     trò</a-button>
@@ -116,7 +115,6 @@ const addRole = async () => {
             <a-table :dataSource="tableData" :columns="columns" rowKey="id" bordered>
                 <template #bodyCell="{ column, record }">
                     <template v-if="column.key == 'fn'">
-
                         <a-button :icon="h(EditOutlined)" color="danger" @click="editRole(record.id)">
                             Sửa
                         </a-button>

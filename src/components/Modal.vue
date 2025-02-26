@@ -36,7 +36,7 @@ const closeModal = () => {
 
 const formSubmit = () => {
     errorEmail.value = emailRegex.test(formData.email) ? "" : "Xin vui lòng hoàn thiện email";
-    if ( errorEmail.value ) return
+    if (errorEmail.value) return
 
     alert(`Submit form, email: ${formData.email}`)
 }
@@ -60,15 +60,17 @@ const formSubmit = () => {
                         <div class="form-group">
                             <div class="modal-body">
                                 <div class="input-label flex">
-                                    <Text class="modal-text" text="Email:"/><span class="required-star">*</span>
+                                    <Text class="modal-text" text="Email:" /><span class="required-star">*</span>
                                 </div>
-                                <Input v-model="formData.email" type="text" placeholder="Nhập email tạo tài khoản" :required="true"/>
+                                <Input v-model="formData.email" type="text" placeholder="Nhập email tạo tài khoản"
+                                    :required="true" />
                                 <span v-if="errorEmail" class="error-message">
                                     {{ errorEmail }}
                                 </span>
                             </div>
                             <div class="modal-bottom flex">
-                                <Button @click="closeModal" class="btn btn-outline default close-modal" text="Hủy bỏ"></Button>
+                                <Button @click="closeModal" class="btn btn-outline default close-modal"
+                                    text="Hủy bỏ"></Button>
                                 <Button type="submit" class="btn btn-primary default" text="Gửi"></Button>
                             </div>
                         </div>
@@ -76,13 +78,13 @@ const formSubmit = () => {
                 </div>
             </div>
         </div>
-    
+
     </transition>
 </template>
 
 
 <style scoped>
-.container{
+.container {
     width: 100%;
     height: 100%;
     background-color: #00000074;
@@ -95,49 +97,52 @@ const formSubmit = () => {
     align-items: center;
     display: none;
 }
+
 .animate__fadeIn {
-    animation-duration: 0.3s !important; 
+    animation-duration: 0.3s !important;
 }
-.modal{
+
+.modal {
     width: 625px;
     background-color: #fff;
     border-radius: 15px;
     padding: 20px 24px;
 }
-.modal-header{
+
+.modal-header {
     justify-content: space-between;
     padding-bottom: 20px;
 }
 
-.form-group{
+.form-group {
     margin-top: 18px;
 }
 
-.modal-content{
+.modal-content {
     width: 100%;
     /* justify-items: center; */
     /* align-content: center; */
 }
-.modal-text{
+
+.modal-text {
     margin-bottom: 8px;
 }
-.default{
+
+.default {
     width: auto;
     margin-left: 12px;
 }
-.btn-outline{
+
+.btn-outline {
     height: 32px;
 }
 
-.modal-bottom{
+.modal-bottom {
     margin-top: 38px;
     justify-content: end;
 }
 
-.close-modal{
+.close-modal {
     cursor: pointer;
 }
-
-
-
 </style>

@@ -1,14 +1,14 @@
 <script setup>
 import { reactive, ref, computed } from 'vue';
 
-import LoginLayout from '../layouts/LoginLayout.vue'
-import Input from "../components/Input.vue"
-import Text from "../components/Text.vue"
-import Button from "../components/Button.vue"
-import Link from "../components/Link.vue"
-import Modal from "../components/Modal.vue"
+import LoginLayout from '@/layouts/LoginLayout.vue'
+import Input from "@/components/Input.vue"
+import Text from "@/components/Text.vue"
+import Button from "@/components/Button.vue"
+import Link from "@/components/Link.vue"
+import Modal from "@/components/Modal.vue"
 import apiClient from '@/axios';
-import router from "../router/index.js"
+import router from "@/router/index.js"
 import showMessage from '@/assets/js/message';
 
 const formData = reactive({
@@ -63,7 +63,7 @@ const login = async () => {
   <LoginLayout>
     <div class="login">
       <Modal v-model:isShow="showModal" />
-      <img src="../assets/logo.svg" alt="">
+      <img src="@/assets/logo.svg" alt="">
       <Text class="larger-text" text="Chào mừng quay lại!" textType="larger" />
       <Text class="small-text" text="Hãy đăng nhập và khám phá bản thân ngay từ hôm nay" textType="small" />
       <form @submit.prevent="login">

@@ -26,7 +26,48 @@ const page = reactive({
   totalValue: 0
 })
 
-let employees = reactive([])
+const employees = reactive([
+  {
+    id: '1',
+    fullName: 'Nguyễn Văn A',
+    status: 'Đang làm việc',
+    role: { id: "3", name: 'Quản lý' },
+    email: 'nguyenvana@example.com',
+    address: '123 Đường Lê Lợi, Quận 1, TP.HCM',
+    phone: '0987654321',
+    created_at: '2024-01-15'
+  },
+  {
+    id: '2',
+    fullName: 'Trần Thị B',
+    status: 'Nghỉ phép',
+    role: { id: "1", name: 'Nhân viên' },
+    email: 'tranthib@example.com',
+    address: '456 Đường Nguyễn Huệ, Quận 3, TP.HCM',
+    phone: '0971234567',
+    created_at: '2023-12-20'
+  },
+  {
+    id: '3',
+    fullName: 'Lê Văn C',
+    status: 'Đang làm việc',
+    role: { id: "2", name: 'Kế toán' },
+    email: 'levanc@example.com',
+    address: '789 Đường Trần Hưng Đạo, Quận 5, TP.HCM',
+    phone: '0965678901',
+    created_at: '2024-02-10'
+  },
+  {
+    id: '4',
+    fullName: 'Phạm Thị D',
+    status: 'Đã nghỉ việc',
+    role: { id: "1", name: 'Nhân viên' },
+    email: 'phamthid@example.com',
+    address: '159 Đường Điện Biên Phủ, Quận 10, TP.HCM',
+    phone: '0952345678',
+    created_at: '2023-09-05'
+  }
+]);
 
 const searchQuery = ref('')
 const selectedRole = ref(null)
@@ -53,7 +94,6 @@ const getEmployee = async () => {
     showMessage('error', error)
   }
 }
-
 
 const handlePageChange = (newPage, newSize) => {
   page.current = newPage
@@ -100,8 +140,22 @@ const getRoles = async () => {
   }
 }
 
+const formatDate = (dateString) => new Intl.DateTimeFormat("vi-VN", {
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  // hour: "2-digit",
+  // minute: "2-digit",
+  // second: "2-digit",
+  timeZone: "Asia/Ho_Chi_Minh",
+}).format(new Date(dateString))
+
 const columns = reactive([
-  { title: 'Tên nhân viên', dataIndex: 'fullName', key: 'fullName' },
+  {
+    title: 'Tên nhân viên',
+    dataIndex: 'fullName',
+    key: 'fullName'
+  },
   {
     title: 'Trạng thái',
     dataIndex: 'status',
@@ -115,7 +169,11 @@ const columns = reactive([
   { title: 'Email', dataIndex: 'email', key: 'email' },
   { title: 'Địa chỉ', dataIndex: 'address', key: 'address' },
   { title: 'Số điện thoại', dataIndex: 'phone', key: 'phone' },
-  { title: 'Ngày tạo', dataIndex: 'created_at', key: 'created_at' }
+  {
+    title: 'Ngày tạo',
+    dataIndex: 'created_at',
+    key: 'created_at'
+  }
 ])
 const rowSelection = {
   onChange: (selectedRowKeys, selectedRows) => {
@@ -141,7 +199,7 @@ onMounted(() => {
   <Layout>
     <template #nav>
 
-      <Flex justify="end">
+      <Flex justify="end" style="width: auto; margin: 12px 12px 0 12px">
         <Button class="margin-left">Phân quyền vai trò</Button>
         <Button @click="showModal" class="margin-left" type="primary" :icon="h(PlusOutlined)">Thêm nhân viên
           khác</Button>
@@ -166,8 +224,8 @@ onMounted(() => {
             </Select>
             <Select v-model:value="selectedStatus" placeholder="Trạng thái" style="margin-left: 3px; width: 150px;">
               <Select.Option value="">Tất cả</Select.Option>
-              <Select.Option value="0">Nghỉ việc</Select.Option>
-              <Select.Option value="1">Đang làm việc</Select.Option>
+              <Select.Option value="1">Nghỉ việc</Select.Option>
+              <Select.Option value="0">Đang làm việc</Select.Option>
             </Select>
 
             <Button @click="getEmployee" type="primary" style="margin-left: 12px">Lưu bộ lọc</Button>
@@ -190,6 +248,12 @@ onMounted(() => {
               <a-tag :color="record.status === 'working' ? 'green' : 'red'">
                 {{ record.status === 'working' ? 'Đang làm việc' : 'Nghỉ việc' }}
               </a-tag>
+            </template>
+            <template v-else-if="column.key === 'fullName'">
+              <a :href="`?id=${record.id}`">{{ record.fullName }}</a>
+            </template>
+            <template v-else-if="column.key === 'created_at'">
+              <p>{{ formatDate(record.created_at) }}</p>
             </template>
             <template v-else>
               {{ text }}
@@ -225,8 +289,8 @@ onMounted(() => {
               <Text class="reset-margin" text="Trạng thái"></Text>
               <Select class="a-input" placeholder="Chọn trạng thái" v-model:value="staffInfor.status"
                 style="width: 100%">
-                <Select.Option :value="0">Nghỉ việc</Select.Option>
-                <Select.Option :value="1">Đang làm việc</Select.Option>
+                <Select.Option :value="0">Đang làm việc</Select.Option>
+                <Select.Option :value="1">Nghỉ việc</Select.Option>
               </Select>
             </div>
             <div>
@@ -244,12 +308,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.top-bar {
-  margin-bottom: 15px
-}
-
-
-
 .margin-left {
   margin: 8px
 }
