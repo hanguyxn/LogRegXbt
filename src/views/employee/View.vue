@@ -7,7 +7,7 @@ import apiClient from '@/axios'
 import showMessage from '@/assets/js/message'
 import Text from '@/components/Text.vue'
 import Loading from '@/components/Loading.vue'
-
+import FilterSearch from '@/components/FilterSearch.vue'
 const isLoading = ref(false)
 
 const staffInfor = reactive({
@@ -69,25 +69,33 @@ const employees = reactive([
   }
 ]);
 
-const searchQuery = ref('')
-const selectedRole = ref(null)
-const selectedStatus = ref(null)
-const selectedDate = ref('')
+// const searchQuery = ref(null)
+// const selectedRole = ref(null)
+// const selectedStatus = ref(null)
+// const selectedDate = ref('')
+
+const employeeParams = reactive({
+  search: null,
+  role: null,
+  status: null,
+  createdAt: null,
+})
+
 
 const getEmployee = async () => {
   try {
     const response = await apiClient.get("/auth/employee", {
       params: {
-        search: searchQuery.value || undefined,
-        role: selectedRole.value || undefined,
-        status: selectedStatus.value || undefined,
-        createdAt: selectedDate.value || undefined,
+        search: employeeParams.search || undefined,
+        role: employeeParams.role || undefined,
+        status: employeeParams.status || undefined,
+        createdAt: employeeParams.createdAt || undefined,
         page: page.current,
         limit: page.size
       }
     })
     employees.length = 0
-    employees.push(...response.data)
+    employees.push(...response?.data?.listEmployee)
     page.totalValue = response.data.length
 
   } catch (error) {
@@ -130,11 +138,14 @@ const handleCancel = () => {
 }
 
 
-const roles = ref([])
+const roles = reactive([])
 const getRoles = async () => {
   try {
     const roleResponse = await apiClient.get(`/roles`)
-    roles.value = roleResponse.data
+    roles.length = 0
+    roles.push(...roleResponse.data)
+
+    // console.log(roles.map(role => ({ value: role.id, label: role.name })))
   } catch (error) {
     console.log(error)
   }
@@ -186,13 +197,60 @@ const rowSelection = {
 }
 
 watchEffect(() => {
-  if (!searchQuery.value) getEmployee()
+  if (!employeeParams.search) getEmployee()
 })
 onMounted(() => {
   getEmployee()
   getRoles()
+  // console.log(roles.value)
 })
 
+const filters = ref([
+  {
+    key: 'role',
+    value: null,
+    placeholder: 'Vai trò',
+    options: roles.map(role => ({ value: role.id, label: role.name }))
+  },
+  {
+    key: 'status',
+    value: null,
+    placeholder: 'Trạng thái',
+    options: [
+      { value: '1', label: 'Nghỉ việc' },
+      { value: '0', label: 'Đang làm việc' }
+    ]
+  }
+])
+
+
+watchEffect(() => {
+  filters.value = [
+    {
+      key: 'role',
+      value: null,
+      placeholder: 'Vai trò',
+      options: roles.map(role => ({ value: role.id, label: role.name }))
+    },
+    {
+      key: 'status',
+      value: null,
+      placeholder: 'Trạng thái',
+      options: [
+        { value: '0', label: 'Nghỉ việc' },
+        { value: '1', label: 'Đang làm việc' }
+      ]
+    }
+  ]
+})
+
+
+const handleSearch = ({ searchQuery, filters }) => {
+  employeeParams.search = searchQuery
+  employeeParams.role = filters.role
+  employeeParams.status = filters.status
+  getEmployee()
+}
 </script>
 
 <template>
@@ -210,27 +268,8 @@ onMounted(() => {
       <div class="employee-management">
 
         <div class="top-bar">
-          <Row>
-            <Col flex="1 1 auto"><Input :prefix="h(SearchOutlined)" @keyup.enter="getEmployee"
-              v-model:value="searchQuery" placeholder="Tìm kiếm theo email, số điện thoại, tên nhân viên"
-              style="width: 600px; margin-right: 12px" />
-            </Col>
-            <Col flex="0 1 auto">
-            <Select v-model:value="selectedRole" placeholder="Vai trò" style="margin-left: 3px; width: 150px;">
-              <Select.Option value="">Tất cả</Select.Option>
-              <Select.Option v-for="role in roles" :key="role.id" :value="role.name">
-                {{ role.name }}
-              </Select.Option>
-            </Select>
-            <Select v-model:value="selectedStatus" placeholder="Trạng thái" style="margin-left: 3px; width: 150px;">
-              <Select.Option value="">Tất cả</Select.Option>
-              <Select.Option value="1">Nghỉ việc</Select.Option>
-              <Select.Option value="0">Đang làm việc</Select.Option>
-            </Select>
-
-            <Button @click="getEmployee" type="primary" style="margin-left: 12px">Lưu bộ lọc</Button>
-            </Col>
-          </Row>
+          <FilterSearch :filters="filters" @search="handleSearch"
+            searchPlaceholder="Tìm kiếm theo email, số điện thoại, tên nhân viên" />
         </div>
 
         <a-table :rowSelection="rowSelection" :dataSource="employees" :columns="columns" rowKey="id" :pagination="{

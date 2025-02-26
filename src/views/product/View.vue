@@ -1,25 +1,14 @@
 <script setup>
 import apiClient from '@/axios';
 import Layout from '@/layouts/Layout.vue';
-import { computed, ref, reactive, h } from 'vue';
+import { computed, ref, reactive, h, onMounted } from 'vue';
 import { PlusCircleOutlined, SearchOutlined, UploadOutlined, DownloadOutlined } from '@ant-design/icons-vue'
 import { Flex, Row, Col, Select, Upload, Button } from 'ant-design-vue'
+import showMessage from '@/assets/js/message';
+import { formatDate } from '@/assets/js/script';
+import FilterSearch from '@/components/FilterSearch.vue';
 
-
-// const getData = async () => {
-//     try {
-//         const response = await apiClient.get("/auth/users");
-//         if (response.status === 200) {
-//             console.log(response.data);
-//         } else {
-//             console.log("Không thể lấy dữ liệu");
-//         }
-//     } catch {
-//         console.log("Lỗi kết nối");
-//     }
-// };
-
-const products = ref([
+const products = reactive([
     { id: '1', name: 'Không vc', sold: -2, createdAt: '09/12/2024', image: 'https://www.w3schools.com/images/w3schools_green.jpg' },
     { id: '2', name: 'Buộc tóc hoa tháng 11!!!!', sold: 987, createdAt: '10/05/2024', image: 'https://www.w3schools.com/images/w3schools_green.jpg' },
     { id: '3', name: 'Váy xinh 2 tmt', sold: 986, createdAt: '10/05/2024', image: 'https://www.w3schools.com/images/w3schools_green.jpg' },
@@ -28,6 +17,28 @@ const products = ref([
     { id: '6', name: 'Test kcn 1', sold: 34324, createdAt: '16/04/2024', image: 'https://www.w3schools.com/images/w3schools_green.jpg' },
     { id: '7', name: 'Test Hoa 2', sold: 85, createdAt: '16/04/2024', image: 'https://www.w3schools.com/images/w3schools_green.jpg' }
 ]);
+
+
+const getProducts = async () => {
+    try {
+        const response = await apiClient.get('/products')
+        if (response.status === 200) {
+            products.length = 0
+            products.push(...response.data)
+        } else {
+            showMessage('warning', response.data.message)
+        }
+    } catch (error) {
+        showMessage('warning', error)
+    }
+}
+
+const totalQuantity = (attributes) => {
+    if (!attributes) return 0
+    return attributes.reduce((total, attribute) => {
+        return total + attribute.values.reduce((sum, current) => (sum + current.quantity), 0)
+    }, 0)
+}
 
 const columns = [
     {
@@ -39,9 +50,14 @@ const columns = [
             h('a', { href: `?id=${record.id}` }, record.name)
         ])
     },
-    { title: 'Có thể bán', dataIndex: 'sold', key: 'sold' },
-    { title: 'Nhãn hiệu', dataIndex: 'brand', key: 'brand' },
-    { title: 'Ngày khởi tạo', dataIndex: 'createdAt', key: 'createdAt' }
+    {
+        title: 'Có thể bán',
+        dataIndex: ['attributes']['values']['quantity'],
+        key: 'sold',
+        customRender: ({ record }) => h('span', {}, totalQuantity(record.attributes))
+    },
+    { title: 'Nhãn hiệu', dataIndex: 'branch', key: 'branch' },
+    { title: 'Ngày khởi tạo', dataIndex: 'created_at', key: 'created_at' }
 ];
 
 const selectedRowKeys = ref([])
@@ -62,7 +78,6 @@ const page = reactive({
 const handlePageChange = (newPage, newSize) => {
     page.current = newPage
     page.size = newSize
-    // getEmployee()
 };
 
 
@@ -86,6 +101,19 @@ const props = {
         }
     },
 };
+
+
+onMounted(async () => {
+    await getProducts()
+})
+
+
+
+
+
+
+
+
 </script>
 
 <template>
@@ -110,7 +138,8 @@ const props = {
         <template #content>
             <div>
                 <Row class="top-bar">
-                    <Col flex="1 1 500px"><a-input :prefix="h(SearchOutlined)"
+                    <FilterSearch />
+                    <!-- <Col flex="1 1 500px"><a-input :prefix="h(SearchOutlined)"
                         placeholder="Tìm kiếm theo mã sản phẩm, tên sản phẩm, barcode"></a-input>
                     </Col>
                     <Col flex="0 1 500px">
@@ -119,7 +148,7 @@ const props = {
                             value: 'Yiminghe', label: 'yiminghe',
                         }, { value: 'disabled', label: 'Disabled', disabled: true, }]" />
                     <a-button style="width: auto; margin-left: 8px;">Lưu bộ lọc</a-button>
-                    </Col>
+                    </Col> -->
                 </Row>
 
             </div>
@@ -132,11 +161,11 @@ const props = {
                 showTotal: (total) => `Tổng cộng ${total} sản phẩm`,
                 onChange: handlePageChange
             }" bordered>
-                <!-- <template #bodyCell="{ text, column, record }">
-                    <template v-if="column.key === 'name'">
-                        <a :href="`?id=${record.id}`">{{ text }}</a>
+                <template #bodyCell="{ text, column, record }">
+                    <template v-if="column.key === 'created_at'">
+                        {{ formatDate(record.created_at) }}
                     </template>
-</template> -->
+                </template>
             </a-table>
         </template>
     </Layout>

@@ -48,7 +48,7 @@ const router = createRouter({
     {
       path: "/role",
       name: "role",
-      component: () => import("@/views/Role.vue"),
+      component: () => import("@/views/employee/Role.vue"),
       meta: {title: "Vai trò"}
     },
     {
