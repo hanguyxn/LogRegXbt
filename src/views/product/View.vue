@@ -45,16 +45,13 @@ const columns = [
         title: 'Sản phẩm',
         dataIndex: 'name',
         key: 'name',
-        customRender: ({ record }) => h('div', { style: "display: flex; align-items: center;" }, [
-            h('img', { src: record.image, width: 30, style: "margin-right: 8px", alt: 'Product Image' }),
-            h('a', { href: `?id=${record.id}` }, record.name)
-        ])
+
     },
     {
         title: 'Có thể bán',
-        dataIndex: ['attributes']['values']['quantity'],
+        dataIndex: 'quantity',
         key: 'sold',
-        customRender: ({ record }) => h('span', {}, totalQuantity(record.attributes))
+        // customRender: ({ record }) => h('span', {}, totalQuantity(record.attributes))
     },
     { title: 'Nhãn hiệu', dataIndex: 'branch', key: 'branch' },
     { title: 'Ngày khởi tạo', dataIndex: 'created_at', key: 'created_at' }
@@ -80,11 +77,7 @@ const handlePageChange = (newPage, newSize) => {
     page.size = newSize
 };
 
-
-const handleChange = (value) => {
-    console.log(`selected ${value}`);
-};
-const props = {
+const props = ref({
     name: 'file',
     action: 'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
     headers: {
@@ -100,18 +93,12 @@ const props = {
             message.error(`${info.file.name} file upload failed.`);
         }
     },
-};
+})
 
 
 onMounted(async () => {
     await getProducts()
 })
-
-
-
-
-
-
 
 
 </script>
@@ -138,7 +125,7 @@ onMounted(async () => {
         <template #content>
             <div>
                 <Row class="top-bar">
-                    <FilterSearch />
+                    <!-- <FilterSearch /> -->
                     <!-- <Col flex="1 1 500px"><a-input :prefix="h(SearchOutlined)"
                         placeholder="Tìm kiếm theo mã sản phẩm, tên sản phẩm, barcode"></a-input>
                     </Col>
@@ -164,6 +151,13 @@ onMounted(async () => {
                 <template #bodyCell="{ text, column, record }">
                     <template v-if="column.key === 'created_at'">
                         {{ formatDate(record.created_at) }}
+                    </template>
+                    <template v-if="column.key === 'name'">
+                        <FLex>
+                            <img :src="record.image" :alt="record.name" style="margin-right: 8px; width: 40px">
+                            <router-link :to="{ name: 'ProductDetail', query: { id: record.id } }">{{ record.name
+                            }}</router-link>
+                        </FLex>
                     </template>
                 </template>
             </a-table>

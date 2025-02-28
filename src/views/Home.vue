@@ -1,17 +1,13 @@
 <script setup>
-import { onMounted, ref } from 'vue';
-import Layout from '@/layouts/Layout.vue';
-import apiClient from '@/axios';
-import router from '@/router';
-import showMessage from '@/assets/js/message';
 
-
+import Layout from '@/layouts/Layout2.vue';
 </script>
 
 <template>
     <Layout>
         <template #content>
-            Trang chủ
+            <p>Trang chủ</p>
         </template>
+
     </Layout>
 </template>

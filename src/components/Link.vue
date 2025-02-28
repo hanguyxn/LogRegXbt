@@ -5,18 +5,18 @@ defineProps({
   text: {
     type: String
   },
-  textType:{
+  textType: {
     type: String,
     default: "custom-text"
   },
-  href:{
+  href: {
     type: String,
     default: "#"
   }
 })
 
-const goToUrl = (url) =>{
-    router.push(url)
+const goToUrl = (url) => {
+  router.push(url)
 }
 
 </script>
@@ -29,11 +29,10 @@ const goToUrl = (url) =>{
 
 <style scoped>
 .custom-text {
-    cursor: pointer;
-    --tw-text-opacity: 1;
-    color: rgb(24 144 255 / var(--tw-text-opacity, 1));
-    font-weight: 500;
-    font-size: 16px;
+  cursor: pointer;
+  --tw-text-opacity: 1;
+  color: rgb(24 144 255 / var(--tw-text-opacity, 1));
+  font-weight: 500;
+  font-size: 16px;
 }
-
 </style>

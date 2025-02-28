@@ -289,7 +289,9 @@ const handleSearch = ({ searchQuery, filters }) => {
               </a-tag>
             </template>
             <template v-else-if="column.key === 'fullName'">
-              <a :href="`?id=${record.id}`">{{ record.fullName }}</a>
+              <router-link :to="{ name: 'EmployeeDetail', query: { id: record.id } }">
+                {{ record.fullName }}
+              </router-link>
             </template>
             <template v-else-if="column.key === 'created_at'">
               <p>{{ formatDate(record.created_at) }}</p>

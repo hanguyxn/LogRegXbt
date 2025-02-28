@@ -3,7 +3,7 @@
 import { Layout } from 'ant-design-vue';
 import { Button } from 'ant-design-vue';
 import AntMenu from '@/components/Ant/AntMenu.vue';
-const { Header, Sider, Content, Footer } = Layout;
+const { Header, Sider, Content } = Layout;
 import { previousPageTitle } from '@/stores/navigation.js';
 import router from "@/router/index.js"
 import { computed, onMounted, useSlots } from 'vue';

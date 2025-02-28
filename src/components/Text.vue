@@ -31,6 +31,12 @@ defineProps({
   line-height: 27px;
 }
 
+.bold {
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 27px;
+}
+
 .small {
   color: #161414aa;
 }
