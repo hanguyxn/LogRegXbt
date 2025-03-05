@@ -32,11 +32,11 @@ const draggerProps = reactive({
 })
 
 
-const data = reactive([
-    { name: 'Kích thước', attribute: ['L', 'M', 'XL'] },
-    { name: 'Màu sắc', attribute: ['Đỏ', 'Xanh'] },
-    { name: 'Chất liệu', attribute: ['Vải'] }
-])
+// const data = reactive([
+//     { name: 'Kích thước', attribute: ['L', 'M', 'XL'] },
+//     { name: 'Màu sắc', attribute: ['Đỏ', 'Xanh'] },
+//     { name: 'Chất liệu', attribute: ['Vải'] }
+// ])
 
 // const convertAttributes = (arr) => {
 //     return arr.map(item => ({
@@ -49,23 +49,23 @@ const data = reactive([
 // }
 
 const formData = reactive({
-    attributes: data,
+    // attributes: data,
     name: 'trinh 1',
-    sku_code: 'trinh 1',
-    barcode: 'trinh 1',
+    skuCode: 'trinh 1',
+    barCode: 'trinh 1',
     unit: 'VND',
     description: 'trinh 1',
-    sell_price: 2,
-    compare_price: 5,
+    sellPrice: 2,
+    comparePrice: 5,
     quantity: 1,
     cost: 1,
     branch: 'GUCCI'
 })
 
 
-watch(data, (newData) => {
-    formData.attributes = newData
-}, { deep: true })
+// watch(data, (newData) => {
+//     formData.attributes = newData
+// }, { deep: true })
 
 const AddProduct = async () => {
     try {
@@ -77,22 +77,22 @@ const AddProduct = async () => {
         }
 
         payload.append('name', formData.name);
-        payload.append('sku_code', formData.sku_code);
-        payload.append('barcode', formData.barcode);
+        payload.append('skuCode', formData.skuCode);
+        payload.append('barCode', formData.barCode);
         payload.append('unit', formData.unit);
         payload.append('description', formData.description);
-        payload.append('sell_price', formData.sell_price);
-        payload.append('compare_price', formData.compare_price);
+        payload.append('sellPrice', formData.sellPrice);
+        payload.append('comparePrice', formData.comparePrice);
         payload.append('quantity', formData.quantity);
         payload.append('cost', formData.cost);
         payload.append('branch', formData.branch);
-        formData.attributes.forEach((attr, index) => {
-            payload.append(`attributes[${index}][name]`, attr.name);
+        // formData.attributes.forEach((attr, index) => {
+        //     payload.append(`attributes[${index}][name]`, attr.name);
 
-            attr.attribute.forEach((item, subIndex) => {
-                payload.append(`attributes[${index}][attribute][${subIndex}][attributeValue]`, item);
-            });
-        });
+        //     attr.attribute.forEach((item, subIndex) => {
+        //         payload.append(`attributes[${index}][attribute][${subIndex}][attributeValue]`, item);
+        //     });
+        // });
 
         const response = await apiClient.post('/products', payload, {
             headers: { 'Content-Type': 'multipart/form-data' }
@@ -139,11 +139,11 @@ const AddProduct = async () => {
             <Flex justify="space-between" gap="small">
                 <div class="group">
                     <Text text="Mã SKU" />
-                    <a-input v-model:value="formData.sku_code" placeholder="Nhập mã SKU" />
+                    <a-input v-model:value="formData.skuCode" placeholder="Nhập mã SKU" />
                 </div>
                 <div class="group">
-                    <Text text="Mã vạch/Barcode" />
-                    <a-input v-model:value="formData.barcode" placeholder="Nhập mã vạch" />
+                    <Text text="Mã vạch/barCode" />
+                    <a-input v-model:value="formData.barCode" placeholder="Nhập mã vạch" />
                 </div>
             </Flex>
 
@@ -157,7 +157,7 @@ const AddProduct = async () => {
                 <VueQuill v-model="formData.description" />
             </div>
 
-            <Divider orientation="left">Thuộc tính sản phẩm</Divider>
+            <!-- <Divider orientation="left">Thuộc tính sản phẩm</Divider>
             <a-table
                 :columns="[{ title: 'Tên thuộc tính', dataIndex: 'name' }, { title: 'Giá trị', dataIndex: 'attribute' }]"
                 :dataSource="data" :pagination="false">
@@ -165,7 +165,7 @@ const AddProduct = async () => {
                     <template v-if="column.dataIndex === 'name'">
                         <a-input v-model:value="record.name" placeholder="Tên thuộc tính" />
                     </template>
-                    <template v-else>
+<template v-else>
                         <Flex gap="small">
                             <a-select v-model:value="record.attribute" mode="tags" placeholder="Nhập giá trị"
                                 style="width: 100%;" />
@@ -174,8 +174,8 @@ const AddProduct = async () => {
                             </a-button>
                         </Flex>
                     </template>
-                </template>
-            </a-table>
+</template>
+</a-table> -->
         </template>
 
         <template #aside>
@@ -192,11 +192,11 @@ const AddProduct = async () => {
             <Flex justify="space-between" gap="small">
                 <div class="group">
                     <Text text="Giá bán" />
-                    <a-input v-model:value="formData.sell_price" suffix="₫" placeholder="0" />
+                    <a-input v-model:value="formData.sellPrice" suffix="₫" placeholder="0" />
                 </div>
                 <div class="group">
                     <Text text="Giá so sánh" />
-                    <a-input v-model:value="formData.compare_price" suffix="₫" placeholder="0" />
+                    <a-input v-model:value="formData.comparePrice" suffix="₫" placeholder="0" />
                 </div>
             </Flex>
 

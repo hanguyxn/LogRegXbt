@@ -1,15 +1,21 @@
 <script setup>
 import apiClient from '@/axios';
 import Layout from '@/layouts/Layout.vue';
-import { computed, ref, reactive, h, onMounted } from 'vue';
+import { computed, ref, reactive, h, onMounted, watchEffect } from 'vue';
 import { PlusCircleOutlined, SearchOutlined, UploadOutlined, DownloadOutlined } from '@ant-design/icons-vue'
 import { Flex, Row, Col, Select, Upload, Button } from 'ant-design-vue'
 import showMessage from '@/assets/js/message';
 import { formatDate } from '@/assets/js/script';
 import FilterSearch from '@/components/FilterSearch.vue';
 
+
+const productParams = reactive({
+    search: undefined
+})
+
+
 const products = reactive([
-    { id: '1', name: 'Không vc', sold: -2, createdAt: '09/12/2024', image: 'https://www.w3schools.com/images/w3schools_green.jpg' },
+    { id: '1', name: 'Không vc', sold: -2, createdAt: '09-12-2024', image: 'https://www.w3schools.com/images/w3schools_green.jpg' },
     { id: '2', name: 'Buộc tóc hoa tháng 11!!!!', sold: 987, createdAt: '10/05/2024', image: 'https://www.w3schools.com/images/w3schools_green.jpg' },
     { id: '3', name: 'Váy xinh 2 tmt', sold: 986, createdAt: '10/05/2024', image: 'https://www.w3schools.com/images/w3schools_green.jpg' },
     { id: '4', name: 'test payment', sold: 72, createdAt: '23/04/2024', image: 'https://www.w3schools.com/images/w3schools_green.jpg' },
@@ -21,7 +27,12 @@ const products = reactive([
 
 const getProducts = async () => {
     try {
-        const response = await apiClient.get('/products')
+        const response = await apiClient.get('/products', {
+            params: {
+                search: productParams.search || undefined
+            }
+        })
+
         if (response.status === 200) {
             products.length = 0
             products.push(...response.data)
@@ -33,12 +44,7 @@ const getProducts = async () => {
     }
 }
 
-const totalQuantity = (attributes) => {
-    if (!attributes) return 0
-    return attributes.reduce((total, attribute) => {
-        return total + attribute.values.reduce((sum, current) => (sum + current.quantity), 0)
-    }, 0)
-}
+
 
 const columns = [
     {
@@ -101,6 +107,13 @@ onMounted(async () => {
 })
 
 
+const searchHandler = async ({ searchQuery }) => {
+    console.log(searchQuery)
+    productParams.search = searchQuery
+
+    await getProducts()
+}
+
 </script>
 
 <template>
@@ -123,10 +136,12 @@ onMounted(async () => {
             </Flex>
         </template>
         <template #content>
-            <div>
-                <Row class="top-bar">
-                    <!-- <FilterSearch /> -->
-                    <!-- <Col flex="1 1 500px"><a-input :prefix="h(SearchOutlined)"
+            <a-card title="Danh sách sản phẩm">
+                <div>
+                    <Row class="top-bar">
+                        <FilterSearch @search="searchHandler" style="width: 100%;"
+                            placeholder="Tìm kiếm theo mã sản phẩm, tên sản phẩm, barcode" />
+                        <!-- <Col flex="1 1 500px"><a-input :prefix="h(SearchOutlined)"
                         placeholder="Tìm kiếm theo mã sản phẩm, tên sản phẩm, barcode"></a-input>
                     </Col>
                     <Col flex="0 1 500px">
@@ -136,31 +151,33 @@ onMounted(async () => {
                         }, { value: 'disabled', label: 'Disabled', disabled: true, }]" />
                     <a-button style="width: auto; margin-left: 8px;">Lưu bộ lọc</a-button>
                     </Col> -->
-                </Row>
+                    </Row>
 
-            </div>
-            <a-table :rowSelection="rowSelection" :dataSource="products" :columns="columns" rowKey="id" :pagination="{
-                total: page.totalValue,
-                current: page.current,
-                pageSize: page.size,
-                showSizeChanger: true,
-                pageSizeOptions: ['5', '10', '20', '50', '100'],
-                showTotal: (total) => `Tổng cộng ${total} sản phẩm`,
-                onChange: handlePageChange
-            }" bordered>
-                <template #bodyCell="{ text, column, record }">
-                    <template v-if="column.key === 'created_at'">
-                        {{ formatDate(record.created_at) }}
+                </div>
+                <a-table :rowSelection="rowSelection" :dataSource="products" :columns="columns" rowKey="id" :pagination="{
+                    total: page.totalValue,
+                    current: page.current,
+                    pageSize: page.size,
+                    showSizeChanger: true,
+                    pageSizeOptions: ['5', '10', '20', '50', '100'],
+                    showTotal: (total) => `Tổng cộng ${total} sản phẩm`,
+                    onChange: handlePageChange
+                }" bordered>
+                    <template #bodyCell="{ text, column, record }">
+                        <template v-if="column.key === 'created_at'">
+                            {{ formatDate(record.created_at) }}
+                        </template>
+                        <template v-if="column.key === 'name'">
+                            <Flex>
+                                <img :src="record.image" :alt="record.name" style="margin-right: 8px; width: 40px">
+                                <Detail :productDetail="products"></Detail>
+                                <router-link :to="{ name: 'productDetail', query: { id: record.id } }">{{ record.name
+                                }}</router-link>
+                            </Flex>
+                        </template>
                     </template>
-                    <template v-if="column.key === 'name'">
-                        <FLex>
-                            <img :src="record.image" :alt="record.name" style="margin-right: 8px; width: 40px">
-                            <router-link :to="{ name: 'ProductDetail', query: { id: record.id } }">{{ record.name
-                            }}</router-link>
-                        </FLex>
-                    </template>
-                </template>
-            </a-table>
+                </a-table>
+            </a-card>
         </template>
     </Layout>
 </template>

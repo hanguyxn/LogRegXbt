@@ -29,7 +29,7 @@ const router = createRouter({
     },
     {
       path: '/products/detail',
-      name: 'ProductDetail',
+      name: 'productDetail',
       component: () => import('@/views/product/Detail.vue'),
       meta: { title: 'Thông tin sản phẩm' },
     },
@@ -40,9 +40,9 @@ const router = createRouter({
       meta: { title: 'Thêm sản phẩm' },
     },
     {
-      path: '/products/varian',
-      name: 'productVarian',
-      component: () => import('@/views/product/Varian.vue'),
+      path: '/products/variant',
+      name: 'productVariant',
+      component: () => import('@/views/product/Variant.vue'),
       meta: { title: 'Biến thể' },
     },
     {
@@ -53,7 +53,7 @@ const router = createRouter({
     },
     {
       path: '/employee/detail',
-      name: 'EmployeeDetail',
+      name: 'employeeDetail',
       component: () => import('@/views/employee/Detail.vue'),
       meta: { title: 'Thông tin nhân viên' },
     },
@@ -62,6 +62,19 @@ const router = createRouter({
       name: 'role',
       component: () => import('@/views/employee/Role.vue'),
       meta: { title: 'Vai trò' },
+    },
+    {
+      path: '/order/create',
+      name: 'createOrder',
+      component: () => import('@/views/order/Create.vue'),
+      meta: { title: 'Tạo đơn hàng' },
+    },
+    ,
+    {
+      path: '/order/view',
+      name: 'viewOrder',
+      component: () => import('@/views/order/View.vue'),
+      meta: { title: 'Đơn hàng' },
     },
   ],
 })

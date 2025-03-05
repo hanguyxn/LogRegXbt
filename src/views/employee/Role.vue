@@ -31,7 +31,6 @@ const getAllRole = async () => {
         const response = await apiClient.get('/roles')
         tableData.length = 0
         tableData.push(...response.data)
-        console.log(response.data)
     } catch (error) {
         console.error("Lỗi khi lấy dữ liệu vai trò:", error)
     }

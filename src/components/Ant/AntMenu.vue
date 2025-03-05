@@ -8,7 +8,11 @@ import {
   UserOutlined,
   SettingOutlined,
   RiseOutlined,
-  ApartmentOutlined
+  ApartmentOutlined,
+  ShoppingCartOutlined,
+  ShopOutlined,
+  PlusSquareOutlined,
+  UnorderedListOutlined
 } from '@ant-design/icons-vue'
 
 const route = useRoute()
@@ -17,8 +21,10 @@ const openKeys = ref([])
 
 
 const menuMap = {
-  employee: 'sub1',
-  role: 'sub1',
+  products: 'sub',
+  productVariant: 'sub',
+  createOrder: 'sub1',
+  viewOrder: 'sub1',
 }
 
 watch(
@@ -40,12 +46,25 @@ watch(
     <Menu.Item key="home" :icon="h(HomeOutlined)">
       <router-link :to="{ name: 'home' }">Trang chủ</router-link>
     </Menu.Item>
-    <Menu.Item key="products" :icon="h(AppstoreOutlined)">
-      <router-link :to="{ name: 'products' }">Sản phẩm</router-link>
-    </Menu.Item>
-    <Menu.Item key="varian" :icon="h(ApartmentOutlined)">
-      <router-link :to="{ name: 'productVarian' }">Biến thể</router-link>
-    </Menu.Item>
+    <Menu.SubMenu key="sub" title="Sản phẩm" :icon="h(AppstoreOutlined)">
+      <Menu.Item key="products" :icon="h(UnorderedListOutlined)">
+        <router-link :to="{ name: 'products' }">Danh sách</router-link>
+      </Menu.Item>
+      <Menu.Item key="productVariant" :icon="h(ApartmentOutlined)">
+        <router-link :to="{ name: 'productVariant' }">Biến thể</router-link>
+      </Menu.Item>
+    </Menu.SubMenu>
+
+    <Menu.SubMenu key="sub1" title="Đơn hàng" :icon="h(ShopOutlined)">
+      <Menu.Item key="viewOrder" :icon="h(ShoppingCartOutlined)">
+        <router-link :to="{ name: 'viewOrder' }">Danh sách</router-link>
+      </Menu.Item>
+      <Menu.Item key="createOrder" :icon="h(PlusSquareOutlined)">
+        <router-link :to="{ name: 'createOrder' }">Tạo đơn hàng</router-link>
+      </Menu.Item>
+
+    </Menu.SubMenu>
+
     <!-- <Menu.SubMenu key="sub1" title="Quản lý" :icon="h(SettingOutlined)"> -->
     <Menu.Item key="employee" :icon="h(UserOutlined)">
       <router-link :to="{ name: 'employee' }">Nhân viên</router-link>

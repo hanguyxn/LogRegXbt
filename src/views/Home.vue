@@ -1,6 +1,6 @@
 <script setup>
 
-import Layout from '@/layouts/Layout2.vue';
+import Layout from '@/layouts/Layout.vue';
 </script>
 
 <template>

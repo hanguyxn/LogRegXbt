@@ -8,6 +8,7 @@ import showMessage from '@/assets/js/message'
 import Text from '@/components/Text.vue'
 import Loading from '@/components/Loading.vue'
 import FilterSearch from '@/components/FilterSearch.vue'
+import { formatDate } from '@/assets/js/script'
 const isLoading = ref(false)
 
 const staffInfor = reactive({
@@ -151,16 +152,6 @@ const getRoles = async () => {
   }
 }
 
-const formatDate = (dateString) => new Intl.DateTimeFormat("vi-VN", {
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
-  // hour: "2-digit",
-  // minute: "2-digit",
-  // second: "2-digit",
-  timeZone: "Asia/Ho_Chi_Minh",
-}).format(new Date(dateString))
-
 const columns = reactive([
   {
     title: 'Tên nhân viên',
@@ -245,10 +236,11 @@ watchEffect(() => {
 })
 
 
-const handleSearch = ({ searchQuery, filters }) => {
+const handleSearch = ({ searchQuery, filters, createdAt }) => {
   employeeParams.search = searchQuery
   employeeParams.role = filters.role
   employeeParams.status = filters.status
+  employeeParams.createdAt = createdAt ? formatDate(createdAt) : undefined
   getEmployee()
 }
 </script>
@@ -268,7 +260,7 @@ const handleSearch = ({ searchQuery, filters }) => {
       <div class="employee-management">
 
         <div class="top-bar">
-          <FilterSearch :filters="filters" @search="handleSearch"
+          <FilterSearch :showCreatedAt="true" :filters="filters" @search="handleSearch"
             searchPlaceholder="Tìm kiếm theo email, số điện thoại, tên nhân viên" />
         </div>
 
@@ -289,7 +281,7 @@ const handleSearch = ({ searchQuery, filters }) => {
               </a-tag>
             </template>
             <template v-else-if="column.key === 'fullName'">
-              <router-link :to="{ name: 'EmployeeDetail', query: { id: record.id } }">
+              <router-link :to="{ name: 'employeeDetail', query: { id: record.id } }">
                 {{ record.fullName }}
               </router-link>
             </template>

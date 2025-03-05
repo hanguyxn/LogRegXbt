@@ -1,29 +1,39 @@
 <script setup>
-
-import { Layout, Button, Row, Col } from 'ant-design-vue';
-import AntMenu from '@/components/Ant/AntMenu.vue';
-const { Header, Sider, Content } = Layout;
-import { previousPageTitle } from '@/stores/navigation.js';
-import router from "@/router/index.js"
-import { computed, onMounted, useSlots } from 'vue';
-import { useAuth } from '@/assets/js/auth/useAuth';
+import { Layout, Button, Row, Col } from 'ant-design-vue'
+import AntMenu from '@/components/Ant/AntMenu.vue'
+const { Header, Sider, Content } = Layout
+import { previousPageTitle } from '@/stores/navigation.js'
+import router from '@/router/index.js'
+import { computed, onMounted, useSlots } from 'vue'
+import { useAuth } from '@/assets/js/auth/useAuth'
 import { LeftOutlined } from '@ant-design/icons-vue'
+import { str } from 'storybook/internal/docs-tools'
 const { isAuthenticated, logout } = useAuth()
 
-const canGoBack = computed(() => window.history.length > 1);
+const canGoBack = computed(() => window.history.length > 1)
 const slots = useSlots()
 const existCustomHeader = computed(() => {
-    return slots.customHeader && slots.customHeader().length > 0;
+    return slots.customHeader && slots.customHeader().length > 0
 })
 
 const existSider = computed(() => {
-    return slots.aside && slots.aside().length > 0;
+    return slots.aside && slots.aside().length > 0
 })
-
 
 const goBack = () => {
     router.go(-1)
-};
+}
+
+const props = defineProps({
+    title: {
+        type: String,
+        default: 'v-app',
+    },
+    side: {
+        type: String,
+        default: 'left',
+    },
+})
 </script>
 <template>
     <Layout style="min-height: 100vh">
@@ -32,15 +42,21 @@ const goBack = () => {
             <AntMenu />
         </Sider>
         <Layout>
-            <Header
-                style="background: #fff; padding: 0 16px; font-weight: bold; display: flex; justify-content: space-between; align-items: center">
-                <span style="margin-right: 8px; cursor: pointer;" v-if="canGoBack" @click="goBack">
+            <Header style="
+          background: #fff;
+          padding: 0 16px;
+          font-weight: bold;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        ">
+                <span style="margin-right: 8px; cursor: pointer" v-if="canGoBack" @click="goBack">
                     <LeftOutlined /> Quay lại {{ previousPageTitle }}
                 </span>
                 <slot name="customHeader"></slot>
 
                 <template v-if="!existCustomHeader">
-                    <!-- <span>Quản lý hệ thống</span> -->
+                    <span>{{ props.title }}</span>
                     <div v-if="!isAuthenticated">
                         <router-link :to="{ name: 'login' }">
                             <Button>Đăng nhập</Button>
@@ -54,19 +70,34 @@ const goBack = () => {
                     </div>
                 </template>
             </Header>
-            <slot style="margin: 24px;" name="nav"></slot>
+            <slot style="margin: 24px" name="nav"></slot>
             <Layout>
-                <Content style="margin: 16px 32px !important">
-                    <Row justify="space-around">
-                        <Col :flex="2">
-                        <slot name="sider"></slot>
-                        </Col>
-                        <Col :flex="4">
-                        <slot name="main"></slot>
-                        </Col>
-                    </Row>
-                    <!-- <slot name="content"></slot> -->
-                </Content>
+                <template v-if="props.side === 'left'">
+                    <Content style="margin: 16px 32px !important">
+                        <Row justify="space-around">
+                            <Col :flex="2">
+                            <slot name="sider"></slot>
+                            </Col>
+                            <Col :flex="4">
+                            <slot name="main"></slot>
+                            </Col>
+                        </Row>
+                        <!-- <slot name="content"></slot> -->
+                    </Content>
+                </template>
+                <template v-else>
+                    <Content style="margin: 16px 32px !important">
+                        <Row justify="space-between">
+                            <Col :flex="4">
+                            <slot name="main"></slot>
+                            </Col>
+                            <Col :flex="2">
+                            <slot name="sider"></slot>
+                            </Col>
+                        </Row>
+                        <!-- <slot name="content"></slot> -->
+                    </Content>
+                </template>
                 <!-- <Sider v-if="existSider" theme="light" width="40%"
                     style="padding: 24px;background: #fff; margin: 16px 16px 16px 0">
                     <slot name="aside"></slot>
