@@ -117,7 +117,8 @@ const handleSubmit = async () => {
                     <img src="http://res.cloudinary.com/dit9enk6m/image/upload/v1740645361/fwwyh5od6hq4hzba7p3d.png"
                         alt="Product Image">
                     <Flex justify="center" gap="small" :vertical="true">
-                        <Text class="bold" text="t1"></Text>
+                        <Text class="bold"
+                            :text="data[0]?.product?.name ? data[0]?.product?.name : 'Khong thay ten'"></Text>
                         <Text class="small" :text="`${data.length} phiên bản`"></Text>
                         <router-link :to="{ name: 'productDetail', query: { id: productId } }">
                             Trở lại sản phẩm

@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router';
 import apiClient from '@/axios';
 import { formatDate } from '@/assets/js/script';
 import Layout from '@/layouts/Layout.vue';
+import FilterSearch from '@/components/FilterSearch.vue';
 
 const loading = ref(false);
 const orders = ref([]);
@@ -124,10 +125,11 @@ onMounted(() => {
         </template>
         <template #content>
             <Card :loading="loading" title="Danh sách đơn hàng">
+                <FilterSearch placeholder="" />
                 <Table :columns="columns" :dataSource="orders" rowKey="orderCode">
                     <template #bodyCell="{ text, column, record }">
                         <template v-if="column.key === 'orderCode'">
-                            <router-link :to="{ name: 'productDetail', query: { id: record.orderCode } }">
+                            <router-link :to="{ name: 'orderDetail', query: { id: record.orderCode } }">
                                 {{ record.orderCode }}
                             </router-link>
                         </template>

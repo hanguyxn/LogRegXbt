@@ -8,7 +8,7 @@ import showMessage from '@/assets/js/message'
 import Text from '@/components/Text.vue'
 import Loading from '@/components/Loading.vue'
 import FilterSearch from '@/components/FilterSearch.vue'
-import { formatDate } from '@/assets/js/script'
+import { formatDate, formatDate2 } from '@/assets/js/script'
 const isLoading = ref(false)
 
 const staffInfor = reactive({
@@ -240,7 +240,7 @@ const handleSearch = ({ searchQuery, filters, createdAt }) => {
   employeeParams.search = searchQuery
   employeeParams.role = filters.role
   employeeParams.status = filters.status
-  employeeParams.createdAt = createdAt ? formatDate(createdAt) : undefined
+  employeeParams.createdAt = createdAt ? formatDate2(createdAt) : undefined
   getEmployee()
 }
 </script>

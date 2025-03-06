@@ -11,10 +11,19 @@ const loading = ref(false);
 
 // Lấy thông tin chi tiết đơn hàng
 const fetchOrderDetail = async () => {
-    loading.value = true;
+
     try {
-        const response = await apiClient.get(`/orders/${route.params.orderId}`);
-        order.value = response.data;
+        loading.value = true;
+        // const response = await apiClient.get(`/orders/${route.params.orderId}`);
+        setTimeout(() => {
+            order.value = {
+                orderCode: 'DH001',
+                customer: 'Nguyễn Văn A',
+                address_shipping: '123 Đường ABC, Quận XYZ, TP.HCM',
+                orderStatus: 'Đã giao hàng',
+                price: 1000000
+            };
+        }, 1000);
     } catch (error) {
         console.error('Lỗi tải đơn hàng', error);
         message.error('Không thể tải thông tin đơn hàng!');

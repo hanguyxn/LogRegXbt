@@ -8,7 +8,7 @@ import showMessage from '@/assets/js/message';
 import { formatDate } from '@/assets/js/script';
 import FilterSearch from '@/components/FilterSearch.vue';
 
-
+const isLoading = ref(false);
 const productParams = reactive({
     search: undefined
 })
@@ -26,7 +26,9 @@ const products = reactive([
 
 
 const getProducts = async () => {
+
     try {
+        isLoading.value = true
         const response = await apiClient.get('/products', {
             params: {
                 search: productParams.search || undefined
@@ -41,6 +43,8 @@ const getProducts = async () => {
         }
     } catch (error) {
         showMessage('warning', error)
+    } finally {
+        isLoading.value = false
     }
 }
 
@@ -118,9 +122,6 @@ const searchHandler = async ({ searchQuery }) => {
 
 <template>
     <Layout>
-        <!-- <template #customHeader>
-            <h2 style="margin: 0; font-weight: bold; color: red">Header custom</h2>
-        </template> -->
         <template #nav>
             <Flex justify="end" style="width: auto; margin: 12px 12px 0 12px">
 
@@ -136,21 +137,11 @@ const searchHandler = async ({ searchQuery }) => {
             </Flex>
         </template>
         <template #content>
-            <a-card title="Danh sách sản phẩm">
+            <a-card :loading="isLoading" title="Danh sách sản phẩm">
                 <div>
                     <Row class="top-bar">
                         <FilterSearch @search="searchHandler" style="width: 100%;"
                             placeholder="Tìm kiếm theo mã sản phẩm, tên sản phẩm, barcode" />
-                        <!-- <Col flex="1 1 500px"><a-input :prefix="h(SearchOutlined)"
-                        placeholder="Tìm kiếm theo mã sản phẩm, tên sản phẩm, barcode"></a-input>
-                    </Col>
-                    <Col flex="0 1 500px">
-                    <Select placeholder="Nhãn hiệu" style=" width: auto; margin-left: 2px;" @change="handleChange"
-                        :options="[{ value: 'jack', label: 'Jack', }, { value: 'lucy', label: 'Lucy', }, {
-                            value: 'Yiminghe', label: 'yiminghe',
-                        }, { value: 'disabled', label: 'Disabled', disabled: true, }]" />
-                    <a-button style="width: auto; margin-left: 8px;">Lưu bộ lọc</a-button>
-                    </Col> -->
                     </Row>
 
                 </div>

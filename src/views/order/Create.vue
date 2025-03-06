@@ -33,7 +33,7 @@ const orderForm = reactive({
     shippingFee: 50000,
     total: 0,
     paymentMethod: 0,
-    paymentStatus: 'Đã thanh toán',
+    paymentStatus: 0,
     shippingStatus: 0,
     customer: {
         name: 'Trinh Trinh Trinh',

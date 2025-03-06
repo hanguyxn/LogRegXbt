@@ -69,12 +69,17 @@ const router = createRouter({
       component: () => import('@/views/order/Create.vue'),
       meta: { title: 'Tạo đơn hàng' },
     },
-    ,
     {
       path: '/order/view',
       name: 'viewOrder',
       component: () => import('@/views/order/View.vue'),
       meta: { title: 'Đơn hàng' },
+    },
+    {
+      path: '/order/detail',
+      name: 'orderDetail',
+      component: () => import('@/views/order/OrderDetail.vue'),
+      meta: { title: 'Chi tiết đơn hàng' },
     },
   ],
 })

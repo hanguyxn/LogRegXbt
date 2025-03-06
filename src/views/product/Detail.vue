@@ -4,7 +4,7 @@ import Text from '@/components/Text.vue'
 import { Flex, message, Upload, Divider, Modal } from 'ant-design-vue'
 import VueQuill from '@/components/VueQuill.vue'
 import { InboxOutlined, DeleteOutlined } from '@ant-design/icons-vue'
-import { watch, ref, reactive } from 'vue'
+import { watch, ref, reactive, onMounted } from 'vue'
 import apiClient from '@/axios'
 import { useRoute, useRouter } from 'vue-router'
 import showMessage from '@/assets/js/message'
@@ -54,29 +54,31 @@ const productDetail = reactive({
     file: null
 })
 
-// Giả lập lấy dữ liệu từ API
 const fetchProductDetail = async () => {
-    loading.value = true
+
     try {
-        // Giả lập dữ liệu từ API
-        const response = {
-            data: {
-                id: '1',
-                name: 'trinh 1',
-                skuCode: 'trinh 1',
-                barCode: 'trinh 1',
-                unit: 'VND',
-                branch: 'GUCCI',
-                description: '<p>trinh 1</p>',
-                sellPrice: 2,
-                comparePrice: 5,
-                cost: 1,
-                quantity: 1,
-                image: 'http://res.cloudinary.com/dit9enk6m/image/upload/v1741072063/hzxryvmrvhkhnhllya0t.png',
-                file: null
-            }
-        }
-        Object.assign(productDetail, response.data)
+        loading.value = true
+        const response = await apiClient.get(`/products/varian/${productId.value}`)
+        // const response = {
+        //     data: {
+        //         id: '1',
+        //         name: 'trinh 1',
+        //         skuCode: 'trinh 1',
+        //         barCode: 'trinh 1',
+        //         unit: 'VND',
+        //         branch: 'GUCCI',
+        //         description: '<p>trinh 1</p>',
+        //         sellPrice: 2,
+        //         comparePrice: 5,
+        //         cost: 1,
+        //         quantity: 1,
+        //         image: 'http://res.cloudinary.com/dit9enk6m/image/upload/v1741072063/hzxryvmrvhkhnhllya0t.png',
+        //         file: null
+        //     }
+        // }
+        Object.assign(productDetail, response.data[0].product)
+        console.log(productDetail);
+
         loading.value = false
     } catch (error) {
         message.error('Không thể tải thông tin sản phẩm')
@@ -86,9 +88,11 @@ const fetchProductDetail = async () => {
 
 const handleSave = async () => {
     const formData = new FormData()
-    if (imgFilePath.value) {
-        formData.append('file', imgFilePath.value)
+    if (!imgFilePath.value) {
+        showMessage('warning', 'Vui lòng chọn ảnh sản phẩm')
+        return
     }
+    formData.append('file', imgFilePath.value)
     formData.append('name', productDetail.name)
     formData.append('sku_code', productDetail.skuCode)
     formData.append('bar_code', productDetail.barCode)
@@ -101,6 +105,7 @@ const handleSave = async () => {
     formData.append('quantity', productDetail.quantity)
 
     try {
+        loading.value = true
         await apiClient.put(`/products/${productId.value}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
@@ -109,6 +114,8 @@ const handleSave = async () => {
         message.success('Lưu thông tin sản phẩm thành công')
     } catch (error) {
         message.error('Không thể lưu thông tin sản phẩm')
+    } finally {
+        loading.value = false
     }
 }
 
@@ -139,7 +146,9 @@ watch(() => route.query.id, (newId) => {
     fetchProductDetail()
 })
 
-fetchProductDetail()
+onMounted(() => {
+    fetchProductDetail()
+})
 
 </script>
 
@@ -153,7 +162,7 @@ fetchProductDetail()
                 <a-button type="primary" danger @click="handleDelete">
                     Xóa
                 </a-button>
-                <a-button :loading="saveProductBtnLoading" type="primary" @click="handleSave">
+                <a-button :loading="loading" type="primary" @click="handleSave">
                     Lưu
                 </a-button>
 
