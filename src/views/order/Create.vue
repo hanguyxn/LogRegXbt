@@ -25,8 +25,10 @@ import {
 } from '@ant-design/icons-vue';
 import apiClient from '@/axios';
 import showMessage from '@/assets/js/message';
+import router from '@/router';
 
 
+const isLoading = ref(false);
 const orderForm = reactive({
     products: [],
     discount: 50000,
@@ -110,7 +112,7 @@ const handleAddVariant = (product, variantId) => {
     calculateTotal();
 };
 
-const productColumns = [
+const productColumns = reactive([
     {
         title: 'Sản phẩm',
         dataIndex: 'name',
@@ -148,10 +150,10 @@ const productColumns = [
             }, () => 'Thêm');
         }
     }
-];
+]);
 
 
-const orderColumns = [
+const orderColumns = reactive([
     {
         title: 'Sản phẩm',
         dataIndex: 'productName',
@@ -223,7 +225,7 @@ const orderColumns = [
             }, () => h(DeleteOutlined));
         }
     }
-];
+]);
 
 const formatOrderData = () => {
     return {
@@ -245,14 +247,23 @@ const formatOrderData = () => {
 };
 
 const submitOrder = async () => {
-    const orderData = formatOrderData();
+
     try {
+        isLoading.value = true;
+        const orderData = formatOrderData();
         const response = await apiClient.post('/orders', orderData);
-        showMessage('success', 'Đơn hàng đã được tạo thành công');
-        console.log('Đơn hàng đã tạo:', response.data);
+        if (response.status === 201) {
+            showMessage('success', 'Đơn hàng đã được tạo thành công');
+            router.push(`/order/detail?id=${response.data.id}`);
+            console.log('Đơn hàng đã tạo:', response.data);
+        } else {
+            showMessage('warning', response?.data?.message);
+        }
     } catch (error) {
         showMessage('error', 'Không thể tạo đơn hàng');
         console.error('Lỗi khi tạo đơn hàng:', error);
+    } finally {
+        isLoading.value = false;
     }
 };
 
@@ -303,12 +314,12 @@ onBeforeUnmount(() => {
 <template>
     <Layout2 side="right" title="Tạo đơn hàng">
         <template #customHeader>
-            <Button type="primary" @click="submitOrder">Tạo đơn hàng</Button>
+            <Button :loading="isLoading" type="primary" @click="submitOrder">Tạo đơn hàng</Button>
         </template>
 
         <template #main>
             <!-- Modal danh sách sản phẩm -->
-            <a-modal style="min-width: 700px;" :open="modalState" @ok="modalState = false" @cancel="modalState = false">
+            <a-modal style="min-width:800px;" :open="modalState" @ok="modalState = false" @cancel="modalState = false">
                 <Card title="Danh sách sản phẩm">
                     <Table :columns="productColumns" :dataSource="productList" rowKey="id"
                         :pagination="{ pageSize: 5 }">
