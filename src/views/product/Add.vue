@@ -11,64 +11,70 @@ import showMessage from '@/assets/js/message'
 const { Dragger } = Upload
 const taxApplicable = ref(false)
 const addProductBtnLoading = ref(false)
-
-
 const imgFilePath = ref(null)
+
+// Thêm rules cho validation
+const rules = {
+    name: [
+        { required: true, message: 'Vui lòng nhập tên sản phẩm', trigger: 'blur' }
+    ],
+    skuCode: [
+        { required: true, message: 'Vui lòng nhập mã SKU', trigger: 'blur' }
+    ],
+    barCode: [
+        { required: true, message: 'Vui lòng nhập mã vạch', trigger: 'blur' }
+    ],
+    unit: [
+        { required: true, message: 'Vui lòng nhập đơn vị tính', trigger: 'blur' }
+    ],
+    sellPrice: [
+        { required: true, message: 'Vui lòng nhập giá bán', trigger: 'blur' },
+        { type: 'number', min: 0, message: 'Giá bán phải lớn hơn hoặc bằng 0', trigger: 'blur' }
+    ],
+    comparePrice: [
+        { type: 'number', min: 0, message: 'Giá so sánh phải lớn hơn hoặc bằng 0', trigger: 'blur' }
+    ],
+    cost: [
+        { required: true, message: 'Vui lòng nhập giá vốn', trigger: 'blur' },
+        { type: 'number', min: 0, message: 'Giá vốn phải lớn hơn hoặc bằng 0', trigger: 'blur' }
+    ]
+}
+
+const formRef = ref(null) // Thêm ref cho form
+
 const draggerProps = reactive({
     name: 'file',
     multiple: false,
     beforeUpload(file) {
         const isLt2M = file.size / 1024 / 1024 < 2;
         if (!isLt2M) {
-            console.log(file)
             showMessage('warning', 'File phải nhỏ hơn 2MB')
             return Upload.LIST_IGNORE
         }
-
         imgFilePath.value = file
         return false
     },
     accept: "image/png, image/jpeg, image/jpg"
 })
 
-
-// const data = reactive([
-//     { name: 'Kích thước', attribute: ['L', 'M', 'XL'] },
-//     { name: 'Màu sắc', attribute: ['Đỏ', 'Xanh'] },
-//     { name: 'Chất liệu', attribute: ['Vải'] }
-// ])
-
-// const convertAttributes = (arr) => {
-//     return arr.map(item => ({
-//         name: item.name,
-//         attribute: item.attribute.map(value => ({
-//             attributeValue: value,
-//             quantity: 50
-//         }))
-//     }))
-// }
-
 const formData = reactive({
-    // attributes: data,
-    name: 'trinh 1',
-    skuCode: 'trinh 1',
-    barCode: 'trinh 1',
-    unit: 'VND',
-    description: 'trinh 1',
-    sellPrice: 2,
-    comparePrice: 5,
+    name: '',
+    skuCode: '',
+    barCode: '',
+    unit: '',
+    description: '',
+    sellPrice: 0,
+    comparePrice: 0,
     quantity: 1,
-    cost: 1,
+    cost: 0,
     branch: 'GUCCI'
 })
 
-
-// watch(data, (newData) => {
-//     formData.attributes = newData
-// }, { deep: true })
-
 const AddProduct = async () => {
     try {
+        // Validate form trước khi submit
+        await formRef.value.validate()
+
         addProductBtnLoading.value = true
         let payload = new FormData();
 
@@ -76,23 +82,9 @@ const AddProduct = async () => {
             payload.append('file', imgFilePath.value);
         }
 
-        payload.append('name', formData.name);
-        payload.append('skuCode', formData.skuCode);
-        payload.append('barCode', formData.barCode);
-        payload.append('unit', formData.unit);
-        payload.append('description', formData.description);
-        payload.append('sellPrice', formData.sellPrice);
-        payload.append('comparePrice', formData.comparePrice);
-        payload.append('quantity', formData.quantity);
-        payload.append('cost', formData.cost);
-        payload.append('branch', formData.branch);
-        // formData.attributes.forEach((attr, index) => {
-        //     payload.append(`attributes[${index}][name]`, attr.name);
-
-        //     attr.attribute.forEach((item, subIndex) => {
-        //         payload.append(`attributes[${index}][attribute][${subIndex}][attributeValue]`, item);
-        //     });
-        // });
+        Object.keys(formData).forEach(key => {
+            payload.append(key, formData[key]);
+        });
 
         const response = await apiClient.post('/products', payload, {
             headers: { 'Content-Type': 'multipart/form-data' }
@@ -101,13 +93,16 @@ const AddProduct = async () => {
         message.success("Thêm sản phẩm thành công!");
         console.log(response.data);
     } catch (error) {
-        message.error("Lỗi khi thêm sản phẩm!");
-        console.error(error);
+        if (error.errorFields) {
+            message.error("Vui lòng kiểm tra lại thông tin!");
+        } else {
+            message.error("Lỗi khi thêm sản phẩm!");
+            console.error(error);
+        }
     } finally {
         addProductBtnLoading.value = false
     }
 };
-
 </script>
 
 <template>
@@ -117,9 +112,11 @@ const AddProduct = async () => {
                 <router-link :to="{ name: 'products' }">
                     <a-button color="primary" variant="outlined">Hủy</a-button>
                 </router-link>
-                <form @submit.prevent="AddProduct">
-                    <a-button :loading="addProductBtnLoading" htmlType="submit" type="primary">Thêm sản phẩm</a-button>
-                </form>
+                <div>
+                    <a-button :loading="addProductBtnLoading" type="primary" @click="AddProduct">
+                        Thêm sản phẩm
+                    </a-button>
+                </div>
             </Flex>
         </template>
 
@@ -127,55 +124,44 @@ const AddProduct = async () => {
             <Text text="Thêm sản phẩm" class="larger"></Text>
             <Divider orientation="left">Thông tin sản phẩm</Divider>
 
-            <div class="group">
-                <Flex>
-                    <Text text="Tên sản phẩm:" />
-                    <p class="error-message">*</p>
+            <a-form ref="formRef" :model="formData" :rules="rules">
+                <div class="group">
+                    <Flex>
+                        <Text text="Tên sản phẩm:" />
+                        <p class="error-message">*</p>
+                    </Flex>
+                    <a-form-item name="name">
+                        <a-input v-model:value="formData.name" placeholder="Nhập tên sản phẩm" />
+                    </a-form-item>
+                </div>
+
+                <Flex justify="space-between" gap="small">
+                    <div class="group">
+                        <Text text="Mã SKU" />
+                        <a-form-item name="skuCode">
+                            <a-input v-model:value="formData.skuCode" placeholder="Nhập mã SKU" />
+                        </a-form-item>
+                    </div>
+                    <div class="group">
+                        <Text text="Mã vạch/barCode" />
+                        <a-form-item name="barCode">
+                            <a-input v-model:value="formData.barCode" placeholder="Nhập mã vạch" />
+                        </a-form-item>
+                    </div>
                 </Flex>
 
-                <a-input v-model:value="formData.name" placeholder="Nhập tên sản phẩm" />
-            </div>
-
-            <Flex justify="space-between" gap="small">
                 <div class="group">
-                    <Text text="Mã SKU" />
-                    <a-input v-model:value="formData.skuCode" placeholder="Nhập mã SKU" />
+                    <Text text="Đơn vị tính" />
+                    <a-form-item name="unit">
+                        <a-input v-model:value="formData.unit" placeholder="Nhập đơn vị tính" />
+                    </a-form-item>
                 </div>
+
                 <div class="group">
-                    <Text text="Mã vạch/barCode" />
-                    <a-input v-model:value="formData.barCode" placeholder="Nhập mã vạch" />
+                    <Text text="Mô tả" />
+                    <VueQuill v-model="formData.description" />
                 </div>
-            </Flex>
-
-            <div class="group">
-                <Text text="Đơn vị tính" />
-                <a-input v-model:value="formData.unit" placeholder="Nhập đơn vị tính" />
-            </div>
-
-            <div class="group">
-                <Text text="Mô tả" />
-                <VueQuill v-model="formData.description" />
-            </div>
-
-            <!-- <Divider orientation="left">Thuộc tính sản phẩm</Divider>
-            <a-table
-                :columns="[{ title: 'Tên thuộc tính', dataIndex: 'name' }, { title: 'Giá trị', dataIndex: 'attribute' }]"
-                :dataSource="data" :pagination="false">
-                <template #bodyCell="{ column, record }">
-                    <template v-if="column.dataIndex === 'name'">
-                        <a-input v-model:value="record.name" placeholder="Tên thuộc tính" />
-                    </template>
-<template v-else>
-                        <Flex gap="small">
-                            <a-select v-model:value="record.attribute" mode="tags" placeholder="Nhập giá trị"
-                                style="width: 100%;" />
-                            <a-button type="text" @click="record.attribute = []">
-                                <DeleteOutlined />
-                            </a-button>
-                        </Flex>
-                    </template>
-</template>
-</a-table> -->
+            </a-form>
         </template>
 
         <template #aside>
@@ -189,21 +175,32 @@ const AddProduct = async () => {
             </Dragger>
 
             <Divider orientation="left">Thông tin giá</Divider>
-            <Flex justify="space-between" gap="small">
-                <div class="group">
-                    <Text text="Giá bán" />
-                    <a-input v-model:value="formData.sellPrice" suffix="₫" placeholder="0" />
-                </div>
-                <div class="group">
-                    <Text text="Giá so sánh" />
-                    <a-input v-model:value="formData.comparePrice" suffix="₫" placeholder="0" />
-                </div>
-            </Flex>
+            <a-form ref="formRef" :model="formData" :rules="rules">
+                <Flex justify="space-between" gap="small">
+                    <div class="group">
+                        <Text text="Giá bán" />
+                        <a-form-item name="sellPrice">
+                            <a-input-number v-model:value="formData.sellPrice" suffix="₫" placeholder="0" type="number"
+                                style="width: 100%" />
+                        </a-form-item>
+                    </div>
+                    <div class="group">
+                        <Text text="Giá so sánh" />
+                        <a-form-item name="comparePrice">
+                            <a-input-number v-model:value="formData.comparePrice" suffix="₫" placeholder="0"
+                                type="number" style="width: 100%" />
+                        </a-form-item>
+                    </div>
+                </Flex>
 
-            <div class="group">
-                <Text text="Giá vốn" />
-                <a-input v-model:value="formData.cost" suffix="₫" placeholder="0" />
-            </div>
+                <div class="group">
+                    <Text text="Giá vốn" />
+                    <a-form-item name="cost">
+                        <a-input-number v-model:value="formData.cost" suffix="₫" placeholder="0" type="number"
+                            style="width: 100%" />
+                    </a-form-item>
+                </div>
+            </a-form>
 
             <a-checkbox v-model:checked="taxApplicable">Áp dụng thuế</a-checkbox>
         </template>
@@ -214,5 +211,10 @@ const AddProduct = async () => {
 .group {
     margin: 12px 0;
     width: 100%;
+}
+
+.error-message {
+    color: red;
+    margin-left: 4px;
 }
 </style>

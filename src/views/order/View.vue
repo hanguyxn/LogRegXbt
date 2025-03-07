@@ -14,16 +14,20 @@ const paymentMethods = ref([]);
 
 const paymentStatusMapping = reactive({
     paid: { label: 'Đã thanh toán', color: 'green' },
-    unpaid: { label: 'Chưa thanh toán', color: 'blue' },
+    unpaid: { label: 'Chưa thanh toán', color: 'yellow' },
 })
 
 
 const orderStatusMapping = reactive({
-    transaction: { label: 'Đẩy qua hãng vận chuyển', color: 'blue' },
-    storage: { label: 'Đã vận chuyển', color: 'green' },
-    cancel: { label: 'Vận chuyển sau', color: 'red' },
+    transaction: { label: 'Đang giao hàng', color: 'green' },
+    storage: { label: 'Đang lưu kho', color: 'blue' },
+    cancel: { label: 'Đã hủy', color: 'red' },
 })
-
+const deliveryStatusMapping = reactive({
+    push_throgh_carier: { label: 'Đẩy qua hãng vận chuyển', color: 'blue' },
+    delivered: { label: 'Đã vận chuyển', color: 'green' },
+    delivery_after: { label: 'Vận chuyển sau', color: 'red' },
+})
 const fetchPaymentMethods = async () => {
     try {
         const response = await apiClient.get('/orders/payment_method');
@@ -65,6 +69,16 @@ const columns = [
             return h(Tag, { color: status.color }, () => status.label);
         },
     },
+    // {
+    //     title: 'Trạng thái vận chuyển',
+    //     dataIndex: 'deliveryStatus',
+    //     key: 'deliveryStatus',
+    //     width: 180,
+    //     customRender: ({ text }) => {
+    //         const status = deliveryStatusMapping[text] || { label: 'Không xác định', color: 'default' };
+    //         return h(Tag, { color: status.color }, () => status.label);
+    //     },
+    // },
     // {
     //     title: 'Sản phẩm',
     //     dataIndex: 'items',
